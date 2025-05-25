@@ -25,13 +25,6 @@ export default function AppRoutes() {
       <Routes>
           <Route index element={<Home />} />
           <Route path="cadastro" element={<Cadastro />} />
-          <Route path="login" element={<Login />} />
-          <Route path="favoritos" element={<Favoritos />} />
-          <Route path="produto/:id" element={<Produto />} />
-          <Route path="perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
-          <Route path="compra" element={<Compra />} />
-          <Route path="pagamento" element={<Pagamento />} />
-          <Route path="status/:status" element={<StatusPage />} />
       </Routes>
     </div>
     )

@@ -1,79 +1,267 @@
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { updateUser } from "../../redux/userSlice";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+interface FormData {
+  name: string;
+  numeroDocumento: string;
+  datanascimento: string;
+  telefone: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
 
-// Define schema with Zod
-const registrationSchema = z.object({
-  name: z.string().min(2, 'O nome deve ter pelo menos 3 caracteres'),
-  email: z.string().email('E-mail inválido'),
-  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
-});
+export default function Cadastro() {
+  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
 
-type RegistrationData = z.infer<typeof registrationSchema>;
-
-export default function RegistrationPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<RegistrationData>({
-    resolver: zodResolver(registrationSchema),
-  });
-
-  const onSubmit = async (data: RegistrationData) => {
+  const onSubmit = async (data: FormData) => {
+    setLoading(true)
     try {
-      console.log('Submitting', data);
-      // TODO: chamar API de cadastro
-      alert('Cadastro realizado com sucesso!');
+      const response = await axios.post(`/cliente/cadastrar`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.status === 200) {
+        const { token, id, nome, email, numeroDocumento, telefone, dataNascimento } = response.data;
+  
+        // Armazena no Redux
+        dispatch(updateUser({ token, user: { id, nome, email, numeroDocumento, telefone, dataNascimento } }));
+  
+        navigate("/");
+      }
     } catch (error) {
-      console.error(error);
-      alert('Erro no cadastro');
+      console.log(error)
+    } finally {
+      setLoading(false)
     }
   };
+  
 
+  const schema = z
+    .object({
+      name: z.string().nonempty("O nome é obrigatório"),
+      numeroDocumento: z
+        .string()
+        .nonempty("O CPF/CNPJ é obrigatório")
+        .transform((value) => value.replace(/\D/g, "")) // Remove pontos e traço antes da validação
+        .refine((value) => value.length === 11 || value.length === 14, {
+          message: "O CPF deve conter 11 dígitos ou o CNPJ deve conter 14 dígitos numéricos",
+        }),
+      datanascimento: z
+        .string()
+        .nonempty("A data de nascimento é obrigatória")
+        .refine((value) => /^\d{2}\/\d{2}\/\d{4}$/.test(value), {
+          message: "A data deve estar no formato DD/MM/YYYY",
+        }),
+      telefone: z
+        .string()
+        .nonempty("O telefone é obrigatório")
+        .transform((value) => value.replace(/\D/g, "")) // Remove caracteres não numéricos
+        .refine((value) => /^\d{11}$/.test(value), {
+          message: "O telefone deve incluir DDD seguido de 9 dígitos",
+        }),
+      email: z
+        .string()
+        .nonempty("O e-mail é obrigatório")
+        .email("Digite um e-mail válido"),
+      password: z.string()
+        .nonempty("A senha é obrigatória")
+        .min(8, "Mínimo de 8 caracteres")
+        .refine((password) => /[A-Z]/.test(password), {
+          message: "Deve conter pelo menos 1 letra maiúscula",
+        })
+        .refine((password) => /[a-z]/.test(password), {
+          message: "Deve conter pelo menos 1 letra minúscula",
+        })
+        .refine((password) => /\d/.test(password), {
+          message: "Deve conter pelo menos 1 número",
+        }),
+      passwordConfirm: z.string().nonempty("A confirmação de senha é obrigatória"),
+    })
+    .refine((data) => data.password === data.passwordConfirm, {
+      message: "As senhas devem coincidir",
+      path: ["passwordConfirm"],
+    });
+
+
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
+
+  // Função para formatar a data de nascimento
+  const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ""); // Remove caracteres não numéricos
+    if (value.length > 2) value = value.slice(0, 2) + "/" + value.slice(2); // Adiciona a primeira barra
+    if (value.length > 5) value = value.slice(0, 5) + "/" + value.slice(5); // Adiciona a segunda barra
+    e.target.value = value.slice(0, 10); // Limita o tamanho a 10 caracteres
+  }
+
+  const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "") // Remove caracteres não numéricos
+  
+    if (value.length > 2) value = `(${value.slice(0, 2)}) ${value.slice(2)}` // Adiciona parênteses no DDD
+    if (value.length > 10) value = value.slice(0, 10) + "-" + value.slice(10) // Adiciona o traço
+  
+    e.target.value = value.slice(0, 15); // Limita o tamanho a 15 caracteres
+  }
+
+  const handleNumeroDocumentoInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Remove tudo que não for número
+    let value = e.target.value.replace(/\D/g, "");
+  
+    // Captura o evento nativo como InputEvent
+    const inputEvent = e.nativeEvent as InputEvent;
+  
+    // Se o usuário pressionou backspace, mantém o valor sem reformatar
+    if (inputEvent.inputType === "deleteContentBackward") {
+      e.target.value = value;
+      return;
+    }
+  
+    // Se o valor tiver 11 dígitos ou menos, formata como CPF
+    if (value.length <= 11) {
+      if (value.length > 3) value = value.slice(0, 3) + "." + value.slice(3);
+      if (value.length > 6) value = value.slice(0, 7) + "." + value.slice(7);
+      if (value.length > 9) value = value.slice(0, 11) + "-" + value.slice(11);
+      // Limita o tamanho a 14 caracteres (xxx.xxx.xxx-xx)
+      e.target.value = value.slice(0, 14);
+    } else {
+      // Para CNPJ: formata como XX.XXX.XXX/XXXX-XX (total de 18 caracteres)
+      // Primeiro, limita a no máximo 14 dígitos
+      value = value.slice(0, 14);
+      let formatted = value;
+      if (formatted.length > 2) formatted = formatted.slice(0, 2) + "." + formatted.slice(2);
+      if (formatted.length > 6) formatted = formatted.slice(0, 6) + "." + formatted.slice(6);
+      if (formatted.length > 10) formatted = formatted.slice(0, 10) + "/" + formatted.slice(10);
+      if (formatted.length > 15) formatted = formatted.slice(0, 15) + "-" + formatted.slice(15);
+      // Limita o resultado a 18 caracteres: 14 dígitos + 4 caracteres de formatação
+      e.target.value = formatted.slice(0, 18);
+    }
+  };
+   
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-semibold text-center mb-6">Cadastro de Usuário</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Nome</label>
-          <input
-            type="text"
-            {...register('name')}
-            className="w-full border border-gray-300 rounded p-2"
-          />
-          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-        </div>
+      <div className="my-10 w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+          <form onSubmit={handleSubmit(onSubmit)} className="mb-10">
+              <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">Cadastrar</h1>
+              <div className="mb-4">
+                  <input
+                      type="text"
+                      placeholder="Nome Completo"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      {...register("name")}
+                      id="name"
+                  />
+                  {errors.name && <p className="text-red-500 text-sm mt-1">{String(errors.name.message)}</p>}
+              </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">E-mail</label>
-          <input
-            type="email"
-            {...register('email')}
-            className="w-full border border-gray-300 rounded p-2"
-          />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-        </div>
+              <div className="mb-4">
+                  <input
+                      type="text"
+                      placeholder="CPF/CNPJ"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      {...register("numeroDocumento")}
+                      id="numeroDocumento"
+                      onInput={handleNumeroDocumentoInput}
+                  />
+                  {errors.numeroDocumento && <p className="text-red-500 text-sm mt-1">{String(errors.numeroDocumento.message)}</p>}
+              </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Senha</label>
-          <input
-            type="password"
-            {...register('password')}
-            className="w-full border border-gray-300 rounded p-2"
-          />
-          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-        </div>
+              <div className="mb-4">
+                  <input
+                      type="text"
+                      placeholder="Data de nascimento (DD/MM/YYYY)"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      {...register("datanascimento")}
+                      id="datanascimento"
+                      onInput={handleDateInput}
+                  />
+                  {errors.datanascimento && <p className="text-red-500 text-sm mt-1">{String(errors.datanascimento.message)}</p>}
+              </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
-        </button>
-      </form>
+              <div className="mb-4">
+                  <input
+                      type="text"
+                      placeholder="Telefone"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      {...register("telefone")}
+                      id="telefone"
+                      onInput={handlePhoneInput}
+                  />
+                  {errors.telefone && <p className="text-red-500 text-sm mt-1">{String(errors.telefone.message)}</p>}
+              </div>
+
+              <div className="mb-4">
+                  <input
+                      type="text"
+                      placeholder="E-mail"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      {...register("email")}
+                      id="email"
+                  />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{String(errors.email.message)}</p>}
+              </div>
+
+              <div className="mb-6">
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Senha"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    {...register("password")}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-10 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <BiSolidShow /> : <BiSolidHide />}
+                  </button>
+                </div>
+                {errors.password && <p className="text-red-500 text-sm mt-1">{String(errors.password.message)}</p>}
+              </div>
+
+              <div className="mb-6 relative">
+                  <input
+                      type={showPasswordConfirm ? "text" : "password"}
+                      placeholder="Confirme sua Senha"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      {...register("passwordConfirm")}
+                  />
+                  {errors.passwordConfirm && <p className="text-red-500 text-sm mt-1">{String(errors.passwordConfirm.message)}</p>}
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-10 flex items-center"
+                    onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                  >
+                    {showPasswordConfirm ? <BiSolidShow /> : <BiSolidHide />}
+                  </button>
+              </div>
+
+              <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="cursor-pointer w-full bg-blue-500 text-white py-3 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors"
+              >
+                  {loading ? <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div> : "Cadastrar"}
+              </button>
+          </form>
+          <div className="-mt-6 text-center">
+            <Link to="/login" className="text-blue-500 hover:text-blue-700">
+              Já possui conta? Faça o login
+            </Link>
+          </div>
     </div>
-  );
-}
+)}
