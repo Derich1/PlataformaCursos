@@ -4,6 +4,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import userReducer from "./userSlice"
 import pagamentoReducer from "./pagamentoSlice"
 import cartReducer from "./cartSlice"
+import cursoReducer from "./cursoSlice"
 
 const persistConfig = {
   key: 'root', // chave de persistência
@@ -14,7 +15,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
-  pagamento: pagamentoReducer
+  pagamento: pagamentoReducer,
+  curso: cursoReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

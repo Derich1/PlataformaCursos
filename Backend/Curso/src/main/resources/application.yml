@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: Curso  # Nome do microsserviço
+    mongodb:
+      database: curso  # Banco de dados MongoDB do microsserviço
+      uri: ${mongoDBUrl}
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+server:
+  port: 8082  # Porta do microsserviço
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-discovery:8761/eureka/
