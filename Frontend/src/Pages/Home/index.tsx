@@ -1,21 +1,39 @@
 
+import axios from "axios";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-
-const featuredCourses = [
-  { id: 1, title: 'React Essentials', description: 'Aprenda o básico de React e crie interfaces interativas.' },
-  { id: 2, title: 'Node.js Avançado', description: 'Domine o backend com Node.js e Express.' },
-  { id: 3, title: 'TypeScript na Prática', description: 'Implemente tipagem estática no seu projeto JS.' },
-  { id: 4, title: 'Deploy na Nuvem', description: 'Saiba como publicar suas aplicações em AWS e Azure.' },
-];
+import { setCursos } from "../../redux/cursoSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import type { RootState } from "../../redux/store";
 
 export default function Home() {
+
+    const dispatch = useDispatch()
+    const cursos = useSelector((state: RootState) => state.curso.curso)
+
+    useEffect(() => {
+        const handleListarCursos = async() => {
+            try {
+                const response = await axios.get("http://localhost:8082/curso")
+                dispatch(setCursos(response.data))
+            } catch(error) {
+                console.log(error)
+            }
+        }
+
+        handleListarCursos()
+    }, [])
+
+    if (!cursos) return
+    
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-md">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">EduPlatform</h1>
+          <h1 className="text-2xl font-bold">Desenvolva suas habilidades</h1>
           <nav className="space-x-4">
             <a href="#courses" className="hover:text-blue-600">Cursos</a>
             <a href="#about" className="hover:text-blue-600">Sobre</a>
@@ -38,13 +56,13 @@ export default function Home() {
       <section id="courses" className="container mx-auto px-6 py-16">
         <h3 className="text-3xl font-semibold mb-8 text-center">Cursos em Destaque</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredCourses.map(course => (
+          {cursos.map(course => (
             <Card key={course.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
-                <CardTitle>{course.title}</CardTitle>
+                <CardTitle>{course.nome}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-sm text-gray-600">{course.description}</p>
+                <p className="mb-4 text-sm text-gray-600">{course.descricao}</p>
                 <Button variant="outline">Saiba Mais</Button>
               </CardContent>
             </Card>
@@ -67,10 +85,14 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="contact" className="bg-gray-100 py-16">
+          <a href="https://www.linkedin.com/feed/">linkedin</a>
+      </section>
+
       {/* Footer */}
       <footer className="bg-white border-t py-6">
         <div className="container mx-auto px-6 text-center text-gray-600 text-sm">
-          © {new Date().getFullYear()} EduPlatform. Todos os direitos reservados.
+          © {new Date().getFullYear()} Desenvolva suas habilidades. Todos os direitos reservados.
         </div>
       </footer>
     </div>
