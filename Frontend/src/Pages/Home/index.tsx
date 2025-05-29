@@ -6,6 +6,7 @@ import { setCursos } from "../../redux/cursoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import type { RootState } from "../../redux/store";
+import { FaLinkedin } from "react-icons/fa6";
 
 export default function Home() {
 
@@ -30,25 +31,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Desenvolva suas habilidades</h1>
-          <nav className="space-x-4">
-            <a href="#courses" className="hover:text-blue-600">Cursos</a>
-            <a href="#about" className="hover:text-blue-600">Sobre</a>
-            <a href="#contact" className="hover:text-blue-600">Contato</a>
-            <Button variant="default">Login</Button>
-          </nav>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <section className="bg-blue-50 flex-1 flex items-center">
         <div className="container mx-auto px-6 py-20 text-center">
           <h2 className="text-4xl font-extrabold mb-4">Aprenda e Cresça com Nossos Cursos Online</h2>
           <p className="text-lg mb-8">Conteúdo atualizado, instrutores especializados e comunidade ativa.</p>
-          <Button size="lg">Ver Cursos</Button>
         </div>
       </section>
 
@@ -85,8 +73,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="bg-gray-100 py-16">
-          <a href="https://www.linkedin.com/feed/">linkedin</a>
+      <section id="contact" className="py-16 text-center">
+          <a href="https://www.linkedin.com/feed/" className="inline-flex items-center gap-0.5">
+            <FaLinkedin /> Linkedin
+          </a>
       </section>
 
       {/* Footer */}

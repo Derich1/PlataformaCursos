@@ -1,7 +1,9 @@
 package derich.com.br.Usuario.entity;
 
+import derich.com.br.Usuario.DTO.UsuarioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Usuario {
 
     private String id;
@@ -31,4 +34,12 @@ public class Usuario {
 
     // caso seja instrutor
     private List<String> cursosCriados;
+
+    public Usuario (UsuarioDTO usuarioDTO) {
+        this.nome = usuarioDTO.nome();
+        this.documento = usuarioDTO.documento();
+        this.dataNascimento = usuarioDTO.dataNascimento();
+        this.email = usuarioDTO.email();
+        this.senha = usuarioDTO.senha();
+    }
 }
