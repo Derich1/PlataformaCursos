@@ -9,12 +9,12 @@ import { updateUser } from "../../redux/userSlice";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
 interface FormData {
-  name: string;
+  nome: string;
   numeroDocumento: string;
-  datanascimento: string;
+  dataNascimento: string;
   telefone: string;
   email: string;
-  password: string;
+  senha: string;
   passwordConfirm: string;
 }
 
@@ -28,7 +28,7 @@ export default function Cadastro() {
   const onSubmit = async (data: FormData) => {
     setLoading(true)
     try {
-      const response = await axios.post(`/cliente/cadastrar`, data, {
+      const response = await axios.post(`http://localhost:8081/usuario/cadastrar`, data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -52,7 +52,7 @@ export default function Cadastro() {
 
   const schema = z
     .object({
-      name: z.string().nonempty("O nome é obrigatório"),
+      nome: z.string().nonempty("O nome é obrigatório"),
       numeroDocumento: z
         .string()
         .nonempty("O CPF/CNPJ é obrigatório")
@@ -60,7 +60,7 @@ export default function Cadastro() {
         .refine((value) => value.length === 11 || value.length === 14, {
           message: "O CPF deve conter 11 dígitos ou o CNPJ deve conter 14 dígitos numéricos",
         }),
-      datanascimento: z
+      dataNascimento: z
         .string()
         .nonempty("A data de nascimento é obrigatória")
         .refine((value) => /^\d{2}\/\d{2}\/\d{4}$/.test(value), {
@@ -77,21 +77,21 @@ export default function Cadastro() {
         .string()
         .nonempty("O e-mail é obrigatório")
         .email("Digite um e-mail válido"),
-      password: z.string()
+      senha: z.string()
         .nonempty("A senha é obrigatória")
         .min(8, "Mínimo de 8 caracteres")
-        .refine((password) => /[A-Z]/.test(password), {
+        .refine((senha) => /[A-Z]/.test(senha), {
           message: "Deve conter pelo menos 1 letra maiúscula",
         })
-        .refine((password) => /[a-z]/.test(password), {
+        .refine((senha) => /[a-z]/.test(senha), {
           message: "Deve conter pelo menos 1 letra minúscula",
         })
-        .refine((password) => /\d/.test(password), {
+        .refine((senha) => /\d/.test(senha), {
           message: "Deve conter pelo menos 1 número",
         }),
       passwordConfirm: z.string().nonempty("A confirmação de senha é obrigatória"),
     })
-    .refine((data) => data.password === data.passwordConfirm, {
+    .refine((data) => data.senha === data.passwordConfirm, {
       message: "As senhas devem coincidir",
       path: ["passwordConfirm"],
     });
@@ -161,10 +161,10 @@ export default function Cadastro() {
                       type="text"
                       placeholder="Nome Completo"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      {...register("name")}
-                      id="name"
+                      {...register("nome")}
+                      id="nome"
                   />
-                  {errors.name && <p className="text-red-500 text-sm mt-1">{String(errors.name.message)}</p>}
+                  {errors.nome && <p className="text-red-500 text-sm mt-1">{String(errors.nome.message)}</p>}
               </div>
 
               <div className="mb-4">
@@ -184,11 +184,11 @@ export default function Cadastro() {
                       type="text"
                       placeholder="Data de nascimento (DD/MM/YYYY)"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      {...register("datanascimento")}
-                      id="datanascimento"
+                      {...register("dataNascimento")}
+                      id="dataNascimento"
                       onInput={handleDateInput}
                   />
-                  {errors.datanascimento && <p className="text-red-500 text-sm mt-1">{String(errors.datanascimento.message)}</p>}
+                  {errors.dataNascimento && <p className="text-red-500 text-sm mt-1">{String(errors.dataNascimento.message)}</p>}
               </div>
 
               <div className="mb-4">
@@ -220,7 +220,7 @@ export default function Cadastro() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Senha"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    {...register("password")}
+                    {...register("senha")}
                   />
                   <button
                     type="button"
@@ -230,7 +230,7 @@ export default function Cadastro() {
                     {showPassword ? <BiSolidShow /> : <BiSolidHide />}
                   </button>
                 </div>
-                {errors.password && <p className="text-red-500 text-sm mt-1">{String(errors.password.message)}</p>}
+                {errors.senha && <p className="text-red-500 text-sm mt-1">{String(errors.senha.message)}</p>}
               </div>
 
               <div className="mb-6 relative">
