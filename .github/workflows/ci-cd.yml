@@ -1,0 +1,30 @@
+name: CI - Build e Testes Microsserviços
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-e-testes:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - usuario
+          - curso  # adicione todos seus microsserviços aqui
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Build e testar ${{ matrix.service }}
+        working-directory: Backend/${{ matrix.service }}
+        run: mvn clean test
