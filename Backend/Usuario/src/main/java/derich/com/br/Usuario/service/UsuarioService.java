@@ -2,6 +2,7 @@ package derich.com.br.Usuario.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import derich.com.br.Usuario.DTO.LoginRequestDTO;
 import derich.com.br.Usuario.DTO.LoginResponseDTO;
 import derich.com.br.Usuario.DTO.UsuarioDTO;
@@ -31,14 +32,15 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Nenhum usuário encontrado com este email."));
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         logger.info(objectMapper.writeValueAsString(usuario));
 
         if (usuario.getSenha().equals(loginRequestDTO.senha())){
             return new LoginResponseDTO(
                     usuario.getNome(),
-                    usuario.getEmail(),
-                    usuario.getDataNascimento(),
                     usuario.getDocumento(),
+                    usuario.getDataNascimento(),
+                    usuario.getEmail(),
                     usuario.getSenha()
             );
         }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Document(collection = "usuario")
@@ -22,7 +23,7 @@ public class Usuario {
 
     private String documento;
 
-    private String dataNascimento;
+    private LocalDate dataNascimento;
 
     private String email;
 
