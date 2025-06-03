@@ -1,9 +1,11 @@
 package derich.com.br.Usuario.DTO;
 
+import java.time.LocalDate;
+
 public record UsuarioDTO(
         String nome,
         String documento,
-        String dataNascimento,
+        LocalDate dataNascimento,
         String email,
         String senha
 )
