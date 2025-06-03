@@ -56,14 +56,14 @@ class CursoServiceTest {
 		Curso resultado = cursoService.cadastrarCurso(cursoDTO);
 
 		assertEquals("Curso Novo", resultado.getNome());
-		assertEquals(150.0, resultado.getPreco());
+		assertEquals(BigDecimal.valueOf(150.00), resultado.getPreco());
 		verify(cursoRepository, times(1)).save(any(Curso.class));
 	}
 
 	@Test
 	void testEditarCurso() {
 		Curso cursoExistente = new Curso("1", "Curso Antigo", BigDecimal.valueOf(100.00), "Desc Antiga", "Prof A", "Cat A");
-		CursoEditDTO cursoEditDTO = new CursoEditDTO("1", "Curso Atualizado", BigDecimal.valueOf(200.00), "Nova descrição", "Prof B", "Cat B");
+		CursoEditDTO cursoEditDTO = new CursoEditDTO("1", "Curso Atualizado", BigDecimal.valueOf(150.00), "Nova descrição", "Prof B", "Cat B");
 
 		when(cursoRepository.findById("1")).thenReturn(Optional.of(cursoExistente));
 		when(cursoRepository.save(any(Curso.class))).thenReturn(cursoExistente);
@@ -71,7 +71,7 @@ class CursoServiceTest {
 		Curso atualizado = cursoService.editarCurso(cursoEditDTO);
 
 		assertEquals("Curso Atualizado", atualizado.getNome());
-		assertEquals(200.0, atualizado.getPreco());
+		assertEquals(BigDecimal.valueOf(150.00), atualizado.getPreco());
 		verify(cursoRepository).save(cursoExistente);
 	}
 
