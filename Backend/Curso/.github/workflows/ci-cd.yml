@@ -25,9 +25,6 @@ jobs:
       - name: Testes
         run: mvn test
 
-      - name: Construir imagem Docker
-        run: docker build -t curso .
-
       # Se quiser subir para DockerHub:
       # - name: Login no DockerHub
       #   run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
