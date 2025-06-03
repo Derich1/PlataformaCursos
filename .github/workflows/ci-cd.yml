@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         service:
-          - usuario
-          - curso  # adicione todos seus microsserviços aqui
+          - Usuario
+          - Curso  # adicione todos seus microsserviços aqui
 
     steps:
       - name: Checkout do código
