@@ -1,12 +1,14 @@
 package derich.com.br.Curso.DTO;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record CursoDTO(
         String nome,
         BigDecimal preco,
         String descricao,
         String professor,
-        String categoria
+        String categoria,
+        List<String> videoKey
 )
 { }

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import type { RootState } from "../../redux/store";
 import { FaLinkedin } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 export default function Home() {
 
@@ -45,15 +46,17 @@ export default function Home() {
         <h3 className="text-3xl font-semibold mb-8 text-center">Cursos em Destaque</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {cursos.map(course => (
-            <Card key={course.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle>{course.nome}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4 text-sm text-gray-600">{course.descricao}</p>
-                <Button variant="outline">Saiba Mais</Button>
-              </CardContent>
-            </Card>
+            <Link to={`/curso/${course.id}`}>
+                <Card key={course.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                    <CardTitle>{course.nome}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="mb-4 text-sm text-gray-600">{course.descricao}</p>
+                    <Button variant="outline">Saiba Mais</Button>
+                </CardContent>
+                </Card>
+            </Link>
           ))}
         </div>
       </section>
