@@ -20,6 +20,12 @@ public class CursoService {
         return cursoRepository.findAll();
     }
 
+    public Curso buscarPorId(String id) {
+        return cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+    }
+
+
     public Curso cadastrarCurso (CursoDTO cursoDTO) {
         Curso curso = new Curso(cursoDTO);
         return cursoRepository.save(curso);
@@ -33,6 +39,7 @@ public class CursoService {
         curso.setDescricao(cursoEditDTO.descricao());
         curso.setProfessor(cursoEditDTO.professor());
         curso.setCategoria(cursoEditDTO.categoria());
+        curso.setVideoKey(cursoEditDTO.videoKeys());
         return cursoRepository.save(curso);
     }
 

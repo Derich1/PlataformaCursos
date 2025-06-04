@@ -12,7 +12,7 @@ export default function Header () {
                 <a href="#about" className="hover:text-blue-600">Sobre</a>
                 <a href="#contact" className="hover:text-blue-600">Contato</a>
                 <Link to="/login"> <Button variant="default" className="cursor-pointer">Login</Button> </Link>
-                
+                <Link to="/cadastrarCurso"> <Button variant="default" className="cursor-pointer">Cadastrar Curso</Button> </Link>
             </nav>
             </div>
         </header>

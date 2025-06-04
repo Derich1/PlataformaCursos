@@ -7,6 +7,10 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
 server:
   port: 8082  # Porta do microsserviço
 
@@ -14,3 +18,11 @@ eureka:
   client:
     service-url:
       defaultZone: http://service-discovery:8761/eureka/
+
+aws:
+  region: sa-east-1
+  accessKeyId: ${AWS_ACCESS_KEY_ID}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}
+  bucketName: plataforma-cursos-bucket-sp
+  profileName: default
+
