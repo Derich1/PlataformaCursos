@@ -12,6 +12,7 @@ interface Curso {
   descricao: string;
   professor: string;
   categoria: string;
+  videoKey: string[];
 }
 
 export const Curso: React.FC = () => {
@@ -102,6 +103,24 @@ export const Curso: React.FC = () => {
               <span className="font-semibold">Categoria:</span>{" "}
               <span>{curso.categoria}</span>
             </div>
+
+            {curso.videoKey.length > 0 && (
+                <div>
+                    <span className="font-semibold block mb-2">Vídeos:</span>
+                    <div className="space-y-4">
+                    {curso.videoKey.map((key, index) => {
+                        const videoUrl = `https://plataforma-cursos-bucket-sp.s3.sa-east-1.amazonaws.com/${key}`;
+                        return (
+                        <video key={index} controls className="w-full rounded-lg shadow">
+                            <source src={videoUrl} type="video/mp4" />
+                            Seu navegador não suporta o elemento de vídeo.
+                        </video>
+                        );
+                    })}
+                    </div>
+                </div>
+            )}
+
           </div>
         </CardContent>
       </Card>
