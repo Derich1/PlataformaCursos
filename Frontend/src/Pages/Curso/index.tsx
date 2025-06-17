@@ -77,7 +77,7 @@ export const Curso: React.FC = () => {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <Button className="mb-6" variant="ghost" onClick={() => navigate(-1)}>
+      <Button className="mb-6 cursor-pointer" variant="ghost" onClick={() => navigate(-1)}>
         ← Voltar
       </Button>
 
@@ -88,19 +88,22 @@ export const Curso: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             <div>
-              <span className="font-semibold">Preço:</span>{" "}
-              <span>R$ {curso.preco.toFixed(2)}</span>
+              <span>
+                {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                }).format(curso.preco)}
+              </span>
             </div>
             <div>
               <span className="font-semibold">Descrição:</span>
               <p className="mt-1 text-gray-700">{curso.descricao}</p>
             </div>
             <div>
-              <span className="font-semibold">Professor:</span>{" "}
+              <span className="font-semibold">Criado por</span>{" "}
               <span>{curso.professor}</span>
             </div>
             <div>
-              <span className="font-semibold">Categoria:</span>{" "}
               <span>{curso.categoria}</span>
             </div>
 

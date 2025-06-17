@@ -1,5 +1,7 @@
 package derich.com.br.Curso.DTO;
 
+import derich.com.br.Curso.entity.Modulo;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -9,6 +11,6 @@ public record CursoDTO(
         String descricao,
         String professor,
         String categoria,
-        List<String> videoKey
+        List<Modulo> modulos
 )
 { }

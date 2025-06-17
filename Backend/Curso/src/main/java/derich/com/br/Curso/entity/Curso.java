@@ -32,8 +32,11 @@ public class Curso {
 
     private String categoria;
 
-    // armazena a key (path) do vídeo no bucket S3
-    private List<String> videoKey;
+    private List<Modulo> modulos;
+
+    private Integer quantidadeModulos;
+
+    private Integer duracaoTotal;
 
     public Curso(CursoDTO cursoDTO){
         this.id = UUID.randomUUID().toString();
@@ -42,6 +45,6 @@ public class Curso {
         this.descricao = cursoDTO.descricao();
         this.professor = cursoDTO.professor();
         this.categoria = cursoDTO.categoria();
-        this.videoKey = cursoDTO.videoKey();
+        this.modulos = cursoDTO.modulos();
     }
 }
