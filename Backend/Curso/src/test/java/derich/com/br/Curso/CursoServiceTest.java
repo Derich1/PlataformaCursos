@@ -2,7 +2,9 @@ package derich.com.br.Curso;
 
 import derich.com.br.Curso.DTO.CursoDTO;
 import derich.com.br.Curso.DTO.CursoEditDTO;
+import derich.com.br.Curso.entity.Aula;
 import derich.com.br.Curso.entity.Curso;
+import derich.com.br.Curso.entity.Modulo;
 import derich.com.br.Curso.repository.ICursoRepository;
 import derich.com.br.Curso.service.CursoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,74 +34,76 @@ class CursoServiceTest {
 
 	@Test
 	void testListarCursos() {
-		// Criamos dois cursos com listas de vídeo-keys (uma pode ser null ou vazia)
-		Curso curso1 = new Curso(
-				"1",
-				"Curso A",
-				BigDecimal.valueOf(100.00),
-				"Descrição A",
-				"Professor A",
-				"Categoria A",
-				Arrays.asList("videos/cursoA1.mp4", "videos/cursoA2.mp4")
-		);
-		Curso curso2 = new Curso(
-				"2",
-				"Curso B",
-				BigDecimal.valueOf(200.00),
-				"Descrição B",
-				"Professor B",
-				"Categoria B",
-				List.of("videos/cursoB1.mp4")
-		);
+		Aula aula1 = new Aula();
+		aula1.setTitulo("Aula 1.");
+		aula1.setDescricao("Descricao 1.");
+		aula1.setDuracaoEmMinutos(20);
 
-		when(cursoRepository.findAll()).thenReturn(Arrays.asList(curso1, curso2));
+		Modulo modulo = new Modulo();
+		modulo.setTitulo("Modulo A.");
+		modulo.setAulas(List.of(aula1));
+
+		Curso curso = new Curso();
+		curso.setId("1");
+		curso.setNome("Curso A.");
+		curso.setQuantidadeModulos(1);
+		curso.setDuracaoTotal(20);
+		curso.setModulos(List.of(modulo));
+
+		when(cursoRepository.findAll()).thenReturn(List.of(curso));
 
 		List<Curso> cursos = cursoService.listarCursos();
 
-		assertEquals(2, cursos.size());
-		assertEquals("Curso A", cursos.get(0).getNome());
-		assertEquals(2, cursos.get(0).getVideoKey().size());
-		assertEquals("videos/cursoB1.mp4", cursos.get(1).getVideoKey().get(0));
+		assertEquals(1, cursos.size());
+		assertEquals(1, cursos.get(0).getQuantidadeModulos());
+		assertEquals(20, cursos.get(0).getDuracaoTotal());
+		assertEquals(1, cursos.get(0).getModulos().get(0).getAulas().size());
+		assertEquals("Aula 1.", cursos.get(0).getModulos().get(0).getAulas().get(0).getTitulo());
+
 		verify(cursoRepository, times(1)).findAll();
 	}
 
 	@Test
 	void testCadastrarCurso() {
-		// Agora o DTO recebe uma lista de vídeo-keys
-		CursoDTO cursoDTO = new CursoDTO(
-				"Curso Novo",
-				BigDecimal.valueOf(150.00),
-				"Descrição nova",
-				"Professor X",
-				"Categoria X",
-				Arrays.asList("videos/novo1.mp4", "videos/novo2.mp4")
-		);
+		Aula aula = new Aula();
+		aula.setTitulo("Aula 1.");
+		aula.setDescricao("Descricao 1.");
+		aula.setDuracaoEmMinutos(30);
 
-		// O construtor de Curso(CursoDTO) deve criar um Curso com essa lista
+		Modulo modulo = new Modulo();
+		modulo.setTitulo("Modulo A.");
+		modulo.setAulas(List.of(aula));
+
+		CursoDTO cursoDTO = new CursoDTO("nome", BigDecimal.valueOf(100), "desc", "prof", "cat", List.of(modulo));
+
 		Curso cursoSalvo = new Curso(
-				"some-id",
+				"algum-id-gerado",
 				cursoDTO.nome(),
 				cursoDTO.preco(),
 				cursoDTO.descricao(),
 				cursoDTO.professor(),
 				cursoDTO.categoria(),
-				cursoDTO.videoKey()
+				cursoDTO.modulos(),
+				1,
+				30
 		);
 
 		when(cursoRepository.save(any(Curso.class))).thenReturn(cursoSalvo);
 
 		Curso resultado = cursoService.cadastrarCurso(cursoDTO);
 
-		assertEquals("Curso Novo", resultado.getNome());
-		assertEquals(BigDecimal.valueOf(150.00), resultado.getPreco());
-		assertEquals(2, resultado.getVideoKey().size());
-		assertTrue(resultado.getVideoKey().contains("videos/novo2.mp4"));
+		assertEquals("nome", resultado.getNome());
+		assertEquals(1, resultado.getQuantidadeModulos());
+		assertEquals(30, resultado.getDuracaoTotal());
+
 		verify(cursoRepository, times(1)).save(any(Curso.class));
 	}
 
 	@Test
 	void testEditarCurso() {
-		// Curso existente já com uma lista de vídeo-keys prévia
+
+		Modulo modulo = new Modulo("moduloteste", Collections.emptyList());
+
 		Curso cursoExistente = new Curso(
 				"1",
 				"Curso Antigo",
@@ -109,9 +111,17 @@ class CursoServiceTest {
 				"Desc Antiga",
 				"Prof A",
 				"Cat A",
-				Arrays.asList("videos/antigo.mp4")
+				List.of(modulo),
+				null,
+				null
 		);
-		// DTO de edição agora inclui nova lista (substituindo a anterior)
+
+		Aula aula1 = new Aula("Aula 1", "Desc 1", 30, "videoteste.mp4");
+		Aula aula2 = new Aula("Aula 2", "Desc 2", 40, "videoteste2.mp4");
+
+		Modulo moduloEdit = new Modulo("moduloteste", List.of(aula1, aula2));
+		Modulo moduloEdit2 = new Modulo("moduloteste2", List.of(aula1, aula2));
+
 		CursoEditDTO dto = new CursoEditDTO(
 				"1",
 				"Curso Atualizado",
@@ -119,7 +129,7 @@ class CursoServiceTest {
 				"Nova descrição",
 				"Prof B",
 				"Cat B",
-				Arrays.asList("videos/atualizado1.mp4", "videos/atualizado2.mp4")
+				List.of(moduloEdit, moduloEdit2)
 		);
 
 		when(cursoRepository.findById("1")).thenReturn(Optional.of(cursoExistente));
@@ -129,8 +139,9 @@ class CursoServiceTest {
 
 		assertEquals("Curso Atualizado", atualizado.getNome());
 		assertEquals(BigDecimal.valueOf(150.00), atualizado.getPreco());
-		assertEquals(2, atualizado.getVideoKey().size());
-		assertTrue(atualizado.getVideoKey().contains("videos/atualizado2.mp4"));
+		assertEquals(2, atualizado.getModulos().size());
+		assertEquals("moduloteste", atualizado.getModulos().get(0).getTitulo());
+		assertEquals("moduloteste2", atualizado.getModulos().get(1).getTitulo());
 		verify(cursoRepository).save(cursoExistente);
 	}
 
@@ -153,6 +164,10 @@ class CursoServiceTest {
 
 	@Test
 	void testDeletarCursoComSucesso() {
+
+		Modulo modulo = new Modulo("moduloteste", Collections.emptyList());
+
+
 		Curso curso = new Curso(
 				"1",
 				"Curso",
@@ -160,7 +175,9 @@ class CursoServiceTest {
 				"desc",
 				"prof",
 				"cat",
-				Arrays.asList("videos/curso1.mp4", "videos/curso2.mp4")
+				List.of(modulo),
+				null,
+				null
 		);
 
 		when(cursoRepository.findById("1")).thenReturn(Optional.of(curso));
