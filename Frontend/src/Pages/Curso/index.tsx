@@ -4,22 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-
-interface Curso {
-  id: string;
-  nome: string;
-  preco: number;
-  descricao: string;
-  professor: string;
-  categoria: string;
-  modulos: string[];
-}
+import type { CursoDTO } from "../../types/curso";
 
 export const Curso: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [curso, setCurso] = useState<Curso | null>(null);
+  const [curso, setCurso] = useState<CursoDTO | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +23,7 @@ export const Curso: React.FC = () => {
 
     const fetchCurso = async () => {
       try {
-        const response = await axios.get<Curso>(`http://localhost:8082/curso/${id}`);
+        const response = await axios.get<CursoDTO>(`http://localhost:8082/curso/${id}`);
         setCurso(response.data);
       } catch (err) {
         console.error(err);
@@ -107,22 +98,25 @@ export const Curso: React.FC = () => {
               <span>{curso.categoria}</span>
             </div>
 
-            {curso.modulos.length > 0 && (
-                <div>
-                    <span className="font-semibold block mb-2">Vídeos:</span>
-                    <div className="space-y-4">
-                    {curso.modulos.map((key, index) => {
-                        const videoUrl = `https://plataforma-cursos-bucket-sp.s3.sa-east-1.amazonaws.com/${key}`;
-                        return (
-                        <video key={index} controls className="w-full rounded-lg shadow">
-                            <source src={videoUrl} type="video/mp4" />
-                            Seu navegador não suporta o elemento de vídeo.
-                        </video>
-                        );
-                    })}
-                    </div>
-                </div>
-            )}
+             {curso.modulos.length > 0 && (
+            <div>
+              <span className="font-semibold block mb-2">Vídeos:</span>
+              <div className="space-y-4">
+                {curso.modulos.map((modulo, index) => (
+                  <div key={index}>
+                    <p className="font-semibold">{modulo.titulo}</p>
+                    <ul className="ml-4 list-disc">
+                      {modulo.aulas.map((aula, i) => (
+                        <li key={i} className="text-gray-700">
+                          {aula.titulo} – {aula.duracaoEmMinutos ?? 0} min
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           </div>
         </CardContent>
