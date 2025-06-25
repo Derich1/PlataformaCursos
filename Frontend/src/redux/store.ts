@@ -9,7 +9,7 @@ import cursoReducer from "./cursoSlice"
 const persistConfig = {
   key: 'root', // chave de persistência
   storage,     // armazenamento (localStorage)
-  whitelist: ['user', 'cart'] // reducers que serão persistidos (ex.: user)
+  whitelist: ['user', 'curso'] // reducers que serão persistidos (ex.: user)
 };
 
 const rootReducer = combineReducers({
@@ -23,6 +23,13 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // 🛠 Ignora as actions do redux-persist que não são serializáveis
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/REGISTER'],
+      },
+    }),
 });
 
 export const persistor = persistStore(store);
