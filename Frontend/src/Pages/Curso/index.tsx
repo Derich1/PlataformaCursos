@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import type { CursoDTO } from "../../types/curso";
 
@@ -13,6 +12,11 @@ export const Curso: React.FC = () => {
   const [curso, setCurso] = useState<CursoDTO | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [moduloAberto, setModuloAberto] = useState(null);
+
+  const toggleModulo = (index: any) => {
+    setModuloAberto(moduloAberto === index ? null : index);
+  };
 
   useEffect(() => {
     if (!id) {
@@ -68,59 +72,64 @@ export const Curso: React.FC = () => {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <Button className="mb-6 cursor-pointer" variant="ghost" onClick={() => navigate(-1)}>
-        ← Voltar
-      </Button>
+      <div className="max-w-2xl mx-auto shadow-md rounded-lg border">
+        <div className="p-6 border-b">
+          <h1 className="text-2xl font-bold">{curso.nome}</h1>
+        </div>
+        <div className="p-6 space-y-4">
+          <div>
+            {new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(curso.preco)}
+          </div>
+          <div>
+            <p className="text-gray-700">{curso.descricao}</p>
+          </div>
+          <div>
+            <span className="font-semibold">Criado por</span> {curso.professor}
+          </div>
+          <div>{curso.categoria}</div>
 
-      <Card className="max-w-2xl mx-auto shadow-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">{curso.nome}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+          {curso.modulos.length > 0 && (
             <div>
-              <span>
-                {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                }).format(curso.preco)}
-              </span>
-            </div>
-            <div>
-              <span className="font-semibold">Descrição:</span>
-              <p className="mt-1 text-gray-700">{curso.descricao}</p>
-            </div>
-            <div>
-              <span className="font-semibold">Criado por</span>{" "}
-              <span>{curso.professor}</span>
-            </div>
-            <div>
-              <span>{curso.categoria}</span>
-            </div>
+              <span className="font-semibold block mb-2">Conteúdo do curso</span>
+              <div className="space-y-2">
+                {curso.modulos.map((modulo, index) => {
+                  const isOpen = moduloAberto === index;
+                  return (
+                    <div
+                      key={index}
+                      className="border rounded-lg shadow-sm overflow-hidden transition-all duration-500"
+                    >
+                      <button
+                        onClick={() => toggleModulo(index)}
+                        className="w-full text-left p-4 bg-gray-100 hover:bg-gray-200 font-semibold"
+                      >
+                        {modulo.titulo}
+                      </button>
 
-             {curso.modulos.length > 0 && (
-            <div>
-              <span className="font-semibold block mb-2">Vídeos:</span>
-              <div className="space-y-4">
-                {curso.modulos.map((modulo, index) => (
-                  <div key={index}>
-                    <p className="font-semibold">{modulo.titulo}</p>
-                    <ul className="ml-4 list-disc">
-                      {modulo.aulas.map((aula, i) => (
-                        <li key={i} className="text-gray-700">
-                          {aula.titulo} – {aula.duracaoEmMinutos ?? 0} min
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                      <div
+                        className={`transition-all duration-500 ease-in-out ${
+                          isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                        } overflow-hidden`}
+                      >
+                        <ul className="p-4 pl-6 list-disc text-gray-700">
+                          {modulo.aulas.map((aula, i) => (
+                            <li key={i}>
+                              {aula.titulo} – {aula.duracaoEmMinutos ?? 0} min
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
-
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
-};
+}
