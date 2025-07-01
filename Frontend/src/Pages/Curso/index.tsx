@@ -117,7 +117,7 @@ export const Curso: React.FC = () => {
                         <ul className="p-4 pl-6 list-disc text-gray-700">
                           {modulo.aulas.map((aula, i) => (
                             <li key={i}>
-                              {aula.titulo} – {aula.duracaoEmMinutos ?? 0} min
+                              {aula.titulo} – {Math.floor(aula.duracaoEmSegundos / 60)} minutos {aula.duracaoEmSegundos % 60} segundos
                             </li>
                           ))}
                         </ul>

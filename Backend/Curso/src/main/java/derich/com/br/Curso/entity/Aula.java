@@ -13,7 +13,7 @@ public class Aula {
 
     private String titulo;
     private String descricao;
-    private Integer duracaoEmMinutos;
+    private Integer duracaoEmSegundos;
 
     // armazena a key (path) do vídeo no bucket S3
     private String videoKey;
