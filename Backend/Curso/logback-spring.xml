@@ -1,0 +1,9 @@
+<configuration>
+    <appender name="JSON-STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder" />
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="JSON-STDOUT" />
+    </root>
+</configuration>

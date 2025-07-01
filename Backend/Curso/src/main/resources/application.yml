@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Curso  # Nome do microsserviço
+    name: curso  # Nome do microsserviço
     mongodb:
       database: curso  # Banco de dados MongoDB do microsserviço
       uri: ${mongoDBUrl}
@@ -25,4 +25,29 @@ aws:
   secretKey: ${AWS_SECRET_ACCESS_KEY}
   bucketName: plataforma-cursos-bucket-sp
   profileName: default
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    io.micrometer.tracing: DEBUG
+    io.opentelemetry: DEBUG
+
 
