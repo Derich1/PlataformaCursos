@@ -33,10 +33,10 @@ public class CursoService {
         int duracao = 0;
         for (Modulo m : curso.getModulos()) {
             for (Aula a : m.getAulas()) {
-                duracao += a.getDuracaoEmMinutos();
+                duracao += a.getDuracaoEmSegundos();
             }
         }
-        curso.setDuracaoTotal(duracao);
+        curso.setDuracaoTotalSegundos(duracao);
         return cursoRepository.save(curso);
     }
 

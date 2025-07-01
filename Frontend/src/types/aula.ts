@@ -1,6 +1,6 @@
 export interface AulaDTO {
   titulo: string;
   descricao: string;
-  duracaoEmMinutos?: number;
+  duracaoEmSegundos: number;
   videoKey?: string;
 }

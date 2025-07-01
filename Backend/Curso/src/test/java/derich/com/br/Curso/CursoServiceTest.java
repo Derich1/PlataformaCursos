@@ -37,7 +37,7 @@ class CursoServiceTest {
 		Aula aula1 = new Aula();
 		aula1.setTitulo("Aula 1.");
 		aula1.setDescricao("Descricao 1.");
-		aula1.setDuracaoEmMinutos(20);
+		aula1.setDuracaoEmSegundos(20);
 
 		Modulo modulo = new Modulo();
 		modulo.setTitulo("Modulo A.");
@@ -47,7 +47,7 @@ class CursoServiceTest {
 		curso.setId("1");
 		curso.setNome("Curso A.");
 		curso.setQuantidadeModulos(1);
-		curso.setDuracaoTotal(20);
+		curso.setDuracaoTotalSegundos(20);
 		curso.setModulos(List.of(modulo));
 
 		when(cursoRepository.findAll()).thenReturn(List.of(curso));
@@ -56,7 +56,7 @@ class CursoServiceTest {
 
 		assertEquals(1, cursos.size());
 		assertEquals(1, cursos.get(0).getQuantidadeModulos());
-		assertEquals(20, cursos.get(0).getDuracaoTotal());
+		assertEquals(20, cursos.get(0).getDuracaoTotalSegundos());
 		assertEquals(1, cursos.get(0).getModulos().get(0).getAulas().size());
 		assertEquals("Aula 1.", cursos.get(0).getModulos().get(0).getAulas().get(0).getTitulo());
 
@@ -68,7 +68,7 @@ class CursoServiceTest {
 		Aula aula = new Aula();
 		aula.setTitulo("Aula 1.");
 		aula.setDescricao("Descricao 1.");
-		aula.setDuracaoEmMinutos(30);
+		aula.setDuracaoEmSegundos(30);
 
 		Modulo modulo = new Modulo();
 		modulo.setTitulo("Modulo A.");
@@ -94,7 +94,7 @@ class CursoServiceTest {
 
 		assertEquals("nome", resultado.getNome());
 		assertEquals(1, resultado.getQuantidadeModulos());
-		assertEquals(30, resultado.getDuracaoTotal());
+		assertEquals(30, resultado.getDuracaoTotalSegundos());
 
 		verify(cursoRepository, times(1)).save(any(Curso.class));
 	}

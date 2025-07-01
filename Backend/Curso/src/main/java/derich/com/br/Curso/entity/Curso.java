@@ -36,7 +36,7 @@ public class Curso {
 
     private Integer quantidadeModulos;
 
-    private Integer duracaoTotal;
+    private Integer duracaoTotalSegundos;
 
     public Curso(CursoDTO cursoDTO){
         this.id = UUID.randomUUID().toString();

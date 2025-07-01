@@ -1,14 +1,8 @@
-// src/pages/CadastrarCurso.tsx
 import axios from "axios";
 import React, { useState, type FormEvent } from "react";
 import type { AulaDTO } from "../../types/aula";
 import type { CursoDTO } from "../../types/curso";
-
-
-
-
-
-
+import VideoUpload from "../../components/VideoUpload"; // Ajuste o caminho conforme necessário
 
 export const CadastroCurso: React.FC = () => {
   const [curso, setCurso] = useState<CursoDTO>({
@@ -19,10 +13,10 @@ export const CadastroCurso: React.FC = () => {
     categoria: "",
     modulos: [],
     quantidadeModulos: 0,
-    duracaoTotal: 0,
+    duracaoTotalEmSegundos: 0,
   });
 
-    const [filesMap, setFilesMap] = useState<Record<string, File>>({});
+  const [filesMap, setFilesMap] = useState<Record<string, File>>({});
   const [status, setStatus] = useState<{ carregando: boolean; sucesso: boolean | null; mensagem: string }>({ carregando: false, sucesso: null, mensagem: "" });
 
   // Handle inputs para campos simples
@@ -59,7 +53,7 @@ export const CadastroCurso: React.FC = () => {
   // Adicionar aula a um módulo
   const adicionarAula = (modIndex: number) => {
     const modulos = [...curso.modulos];
-    modulos[modIndex].aulas.push({ titulo: "", descricao: "", duracaoEmMinutos: undefined });
+    modulos[modIndex].aulas.push({ titulo: "", descricao: "", duracaoEmSegundos: 0 });
     setCurso(prev => ({ ...prev, modulos }));
   };
 
@@ -84,24 +78,26 @@ export const CadastroCurso: React.FC = () => {
     setCurso(prev => ({ ...prev, modulos }));
   };
 
-  // Selecionar arquivo de vídeo para aula
-  const handleVideoChange = (modIndex: number, aulaIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      const file = e.target.files[0];
-      const key = `${modIndex}-${aulaIndex}`;
-      setFilesMap(prev => ({ ...prev, [key]: file }));
-    }
+  // Selecionar arquivo de vídeo para aula e atualizar duração
+  const handleVideoChange = (modIndex: number, aulaIndex: number, file: File) => {
+    const key = `${modIndex}-${aulaIndex}`;
+    setFilesMap(prev => ({ ...prev, [key]: file }));
   };
 
   // Calcular totais antes de enviar
   const calcularTotais = () => {
     const quantidadeModulos = curso.modulos.length;
-    const duracaoTotal = curso.modulos.reduce(
-      (sumMod, mod) => sumMod + mod.aulas.reduce((sumAul, aul) => sumAul + (aul.duracaoEmMinutos ?? 0), 0),
+    const duracaoTotalEmSegundos = curso.modulos.reduce(
+      (sumMod, mod) =>
+        sumMod + mod.aulas.reduce(
+          (sumAul, aul) => sumAul + (aul.duracaoEmSegundos ?? 0),
+          0
+        ),
       0
     );
-    setCurso(prev => ({ ...prev, quantidadeModulos, duracaoTotal }));
+    setCurso(prev => ({ ...prev, quantidadeModulos, duracaoTotalEmSegundos }));
   };
+
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -130,14 +126,15 @@ export const CadastroCurso: React.FC = () => {
         modulos: modulosComVideoKey,
       };
 
+      console.log(payload.duracaoTotalEmSegundos)
+
       const response = await axios.post("http://localhost:8082/curso", payload, {
         headers: { "Content-Type": "application/json" },
       });
 
       if (response.status === 200) {
         setStatus({ carregando: false, sucesso: true, mensagem: "Curso cadastrado com sucesso!" });
-        // Resetar formulário
-        setCurso({ nome: "", preco: 0, descricao: "", professor: "", categoria: "", modulos: [], quantidadeModulos: 0, duracaoTotal: 0 });
+        setCurso({ nome: "", preco: 0, descricao: "", professor: "", categoria: "", modulos: [], quantidadeModulos: 0, duracaoTotalEmSegundos: 0 });
         setFilesMap({});
       } else {
         setStatus({ carregando: false, sucesso: false, mensagem: `Falha ao cadastrar: ${response.statusText}` });
@@ -156,7 +153,6 @@ export const CadastroCurso: React.FC = () => {
     });
     return response.data;
   }
-
 
   return (
     <div className="max-w-3xl mt-10 mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -202,23 +198,41 @@ export const CadastroCurso: React.FC = () => {
                 <div key={ai} className="border border-dashed border-gray-400 rounded p-3 mb-3 space-y-2">
                   <input type="text" placeholder="Título da Aula" value={aul.titulo} onChange={e => handleAulaChange(mi, ai, 'titulo', e.target.value)} required className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                   <textarea placeholder="Descrição da Aula" value={aul.descricao} onChange={e => handleAulaChange(mi, ai, 'descricao', e.target.value)} required rows={2} className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical" />
-                  <input type="number" placeholder="Duração (min)" value={aul.duracaoEmMinutos ?? ""} onChange={e => handleAulaChange(mi, ai, 'duracaoEmMinutos', e.target.value)} required className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  <input type="file" accept="video/*" onChange={e => handleVideoChange(mi, ai, e)} required className="w-full text-sm shadow-lg" />
+                  <VideoUpload 
+                    onDurationChange={(minutes, seconds) => {
+                      const duracaoEmSegundos = minutes * 60 + seconds;
+                      handleAulaChange(mi, ai, 'duracaoEmSegundos', duracaoEmSegundos);
+                    }}
+                    onFileChange={(file) => handleVideoChange(mi, ai, file)}
+                  />
+                  <div>
+                    <label>
+                      Duração: {
+                        aul.duracaoEmSegundos > 0
+                          ? `${Math.floor(aul.duracaoEmSegundos / 60)} min ${aul.duracaoEmSegundos % 60} seg`
+                          : 'Selecione um vídeo'
+                      }
+                    </label>
+                  </div>
                   <button type="button" onClick={() => removerAula(mi, ai)} className="mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded">Remover Aula</button>
                 </div>
               ))}
+              <div>
+                Duração total:{' '}
+                {curso.duracaoTotalEmSegundos > 0
+                  ? `${Math.floor(curso.duracaoTotalEmSegundos / 60)} min ${curso.duracaoTotalEmSegundos % 60} seg`
+                  : '—'}
+              </div>
             </div>
           ))}
         </div>
 
-        <button type="submit" disabled={status.carregando} className={`w-full py-3 font-semibold rounded ${status.carregando ? 'bg-green-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'} text-white`}>{status.carregando ? 'Cadastrando...' : 'Cadastrar Curso'}</button>
+        <button type="submit" disabled={status.carregando} className={`w-full py-3 cursor-pointer font-semibold rounded ${status.carregando ? 'bg-green-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'} text-white`}>{status.carregando ? 'Cadastrando...' : 'Cadastrar Curso'}</button>
       </form>
 
       {status.sucesso !== null && (
-        <div className={`mt-4 font-bold ${status.sucesso ? 'text-green-600' : 'text-red-600'}`}>${status.mensagem}</div>
+        <div className={`mt-4 font-bold ${status.sucesso ? 'text-green-600' : 'text-red-600'}`}>{status.mensagem}</div>
       )}
     </div>
   );
 }
-
-
