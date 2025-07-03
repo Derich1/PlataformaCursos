@@ -8,5 +8,5 @@ export interface CursoDTO {
   categoria: string;
   modulos: ModuloDTO[];
   quantidadeModulos: number;
-  duracaoTotalEmSegundos: number;
+  duracaoTotalSegundos: number;
 }

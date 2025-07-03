@@ -3,6 +3,7 @@ import React, { useState, type FormEvent } from "react";
 import type { AulaDTO } from "../../types/aula";
 import type { CursoDTO } from "../../types/curso";
 import VideoUpload from "../../components/VideoUpload"; // Ajuste o caminho conforme necessário
+import { useNavigate } from "react-router-dom";
 
 export const CadastroCurso: React.FC = () => {
   const [curso, setCurso] = useState<CursoDTO>({
@@ -18,6 +19,7 @@ export const CadastroCurso: React.FC = () => {
 
   const [filesMap, setFilesMap] = useState<Record<string, File>>({});
   const [status, setStatus] = useState<{ carregando: boolean; sucesso: boolean | null; mensagem: string }>({ carregando: false, sucesso: null, mensagem: "" });
+  const navigate = useNavigate()
 
   // Handle inputs para campos simples
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -138,6 +140,7 @@ export const CadastroCurso: React.FC = () => {
         setStatus({ carregando: false, sucesso: true, mensagem: "Curso cadastrado com sucesso!" });
         setCurso({ nome: "", preco: 0, descricao: "", professor: "", categoria: "", modulos: [], quantidadeModulos: 0, duracaoTotalEmSegundos: 0 });
         setFilesMap({});
+        navigate("/")
       } else {
         setStatus({ carregando: false, sucesso: false, mensagem: `Falha ao cadastrar: ${response.statusText}` });
       }
@@ -219,12 +222,6 @@ export const CadastroCurso: React.FC = () => {
                   <button type="button" onClick={() => removerAula(mi, ai)} className="mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded">Remover Aula</button>
                 </div>
               ))}
-              <div>
-                Duração total:{' '}
-                {curso.duracaoTotalEmSegundos > 0
-                  ? `${Math.floor(curso.duracaoTotalEmSegundos / 60)} min ${curso.duracaoTotalEmSegundos % 60} seg`
-                  : '—'}
-              </div>
             </div>
           ))}
         </div>
