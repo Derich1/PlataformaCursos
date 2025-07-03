@@ -87,14 +87,16 @@ export const CadastroCurso: React.FC = () => {
   // Calcular totais antes de enviar
   const calcularTotais = () => {
     const quantidadeModulos = curso.modulos.length;
-    const duracaoTotalEmSegundos = curso.modulos.reduce(
-      (sumMod, mod) =>
-        sumMod + mod.aulas.reduce(
-          (sumAul, aul) => sumAul + (aul.duracaoEmSegundos ?? 0),
-          0
-        ),
-      0
-    );
+
+    let duracaoTotalEmSegundos = 0;
+
+    for (const modulo of curso.modulos) {
+      for (const aula of modulo.aulas) {
+        // Operador de coalescência nula, se o valor da esquerda for nulo ou indefinido usa o da direita
+        duracaoTotalEmSegundos += aula.duracaoEmSegundos ?? 0;
+      }
+    }
+
     setCurso(prev => ({ ...prev, quantidadeModulos, duracaoTotalEmSegundos }));
   };
 
