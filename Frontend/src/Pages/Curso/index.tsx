@@ -93,7 +93,10 @@ export const Curso: React.FC = () => {
 
           {curso.modulos.length > 0 && (
             <div>
-              <span className="font-semibold block mb-2">Conteúdo do curso</span>
+              <div className="flex space-x-2">
+                <span className="font-semibold block mb-2">Conteúdo do curso</span>
+                <span>{Math.floor(curso.duracaoTotalSegundos / 60)} minutos e {curso.duracaoTotalSegundos % 60} segundos</span>
+              </div>
               <div className="space-y-2">
                 {curso.modulos.map((modulo, index) => {
                   const isOpen = moduloAberto === index;
@@ -117,7 +120,7 @@ export const Curso: React.FC = () => {
                         <ul className="p-4 pl-6 list-disc text-gray-700">
                           {modulo.aulas.map((aula, i) => (
                             <li key={i}>
-                              {aula.titulo} – {Math.floor(aula.duracaoEmSegundos / 60)} minutos {aula.duracaoEmSegundos % 60} segundos
+                              {aula.titulo} – {Math.floor(aula.duracaoEmSegundos / 60)} minutos e {aula.duracaoEmSegundos % 60} segundos
                             </li>
                           ))}
                         </ul>
