@@ -5,19 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { setCursos } from "../../redux/cursoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import type { RootState } from "../../redux/store";
 import { FaLinkedin } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import type { RootState } from "../../redux/store";
 
 export default function Home() {
 
     const dispatch = useDispatch()
-    const cursos = useSelector((state: RootState) => state.curso.curso)
+    const cursos = useSelector((state: RootState) => state.curso.todosCursos)
 
     useEffect(() => {
         const handleListarCursos = async() => {
             try {
                 const response = await axios.get("http://localhost:8082/curso")
+                console.log(response.data)
                 dispatch(setCursos(response.data))
             } catch(error) {
                 console.log(error)
@@ -26,9 +27,8 @@ export default function Home() {
 
         handleListarCursos()
     }, [])
-
-    if (!cursos) return
     
+    if (!cursos) return
 
   return (
     <div className="min-h-screen flex flex-col">
