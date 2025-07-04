@@ -1,6 +1,7 @@
 import type { ModuloDTO } from "./modulo";
 
 export interface CursoDTO {
+  id: string;
   nome: string;
   preco: number;
   descricao: string;

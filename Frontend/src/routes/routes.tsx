@@ -6,6 +6,7 @@ import Login from "../Pages/Login";
 import Header from "../components/Header";
 import { CadastroCurso } from "../Pages/CadastroCurso";
 import { Curso } from "../Pages/Curso";
+import PagamentoStripe from "../Pages/PagamentoStripe";
 
 
 export default function AppRoutes() {
@@ -33,6 +34,7 @@ export default function AppRoutes() {
           <Route path="login" element={<Login />} />
           <Route path="cadastrarCurso" element={<CadastroCurso />} />
           <Route path="/curso/:id" element={<Curso />} />
+          <Route path="comprar" element={<PagamentoStripe />} />
       </Routes>
     </div>
     )

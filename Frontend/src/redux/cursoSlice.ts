@@ -1,32 +1,29 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-type Curso = {
-  id: string;
-  nome: string;
-  preco: number;
-  descricao: string;
-  professor: string;
-  categoria: string;
-};
+import type { CursoDTO } from "../types/curso";
 
 type CursoState = {
-    curso: Curso[] | null
+    curso: CursoDTO | null
+    todosCursos: CursoDTO[]
 }
 
 const initialState: CursoState = {
-  curso: null
+  curso: null,
+  todosCursos: []
 };
 
-const cartSlice = createSlice({
+const cursoSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setCursos: (state, action: PayloadAction<Curso[]>) => {
-      state.curso = action.payload // Adiciona o item ao carrinho
+    setCursos: (state, action: PayloadAction<CursoDTO[]>) => {
+      state.todosCursos = action.payload
+    },
+    setCurso: (state, action: PayloadAction<CursoDTO>) => {
+      state.curso = action.payload
     },
   },
 });
 
-export const { setCursos } = cartSlice.actions;
+export const { setCursos, setCurso } = cursoSlice.actions;
 
-export default cartSlice.reducer;
+export default cursoSlice.reducer;
