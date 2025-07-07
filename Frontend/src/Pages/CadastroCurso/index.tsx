@@ -14,7 +14,7 @@ export const CadastroCurso: React.FC = () => {
     categoria: "",
     modulos: [],
     quantidadeModulos: 0,
-    duracaoTotalEmSegundos: 0,
+    duracaoTotalSegundos: 0,
   });
 
   const [filesMap, setFilesMap] = useState<Record<string, File>>({});
@@ -130,15 +130,15 @@ export const CadastroCurso: React.FC = () => {
         modulos: modulosComVideoKey,
       };
 
-      console.log(payload.duracaoTotalEmSegundos)
+      console.log(payload.duracaoTotalSegundos)
 
-      const response = await axios.post("http://localhost:8082/curso", payload, {
+      const response = await axios.post("http://curso:8082/curso", payload, {
         headers: { "Content-Type": "application/json" },
       });
 
       if (response.status === 200) {
         setStatus({ carregando: false, sucesso: true, mensagem: "Curso cadastrado com sucesso!" });
-        setCurso({ nome: "", preco: 0, descricao: "", professor: "", categoria: "", modulos: [], quantidadeModulos: 0, duracaoTotalEmSegundos: 0 });
+        setCurso({ nome: "", preco: 0, descricao: "", professor: "", categoria: "", modulos: [], quantidadeModulos: 0, duracaoTotalSegundos: 0 });
         setFilesMap({});
         navigate("/")
       } else {
