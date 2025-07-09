@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   # Grafana - interface unificada
   grafana:
@@ -13,8 +11,81 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus
-      - loki
       - jaeger
+    networks:
+      - elk-net
+
+  frontend:
+    build:
+      context: ../Frontend
+    container_name: frontend
+    ports:
+      - "8084:80"  # A aplicação será servida na porta 80
+    env_file:
+      - .env
+    networks:
+      - elk-net
+  curso:
+    image: curso
+    depends_on:
+      logstash:
+        condition: service_healthy
+    environment:
+      - spring.data.mongodb.uri=${MONGODB_URL}
+      - LOGSTASH_HOST=logstash
+      - LOGSTASH_PORT=5000
+      - SPRING_PROFILES_ACTIVE=dev
+      - MANAGEMENT_TRACING_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    networks:
+      - elk-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+    container_name: elk_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 9200:9200
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - elk-net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.2
+    container_name: elk_logstash
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9600" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      - elasticsearch
+    ports:
+      - 15000:5000     # porta p/ appender TCP
+      - 9600:9600     # API de monitoring
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    networks:
+      - elk-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.2
+    container_name: elk_kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    networks:
+      - elk-net
 
   # Prometheus - métricas
   prometheus:
@@ -23,13 +94,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
-
-  # Loki - logs
-  loki:
-    image: grafana/loki:latest
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - elk-net
 
   # Jaeger - tracing
   jaeger:
@@ -39,16 +105,24 @@ services:
     ports:
       - "16686:16686"
       - "4318:4318"  # OTLP HTTP
+    networks:
+      - elk-net
 
-  promtail:
-    image: grafana/promtail:latest
+  mongo-database:
+    image: mongo:latest
+    container_name: "database"
+    ports:
+      - "27018:27017"
     volumes:
-      - /var/log:/var/log
-      - ./promtail-config.yml:/etc/promtail/config.yml
-    command: -config.file=/etc/promtail/config.yml
-    depends_on:
-      - loki
+      - mongo_data:/data/db  # Volume persistente
+    networks:
+      - elk-net
 
+networks:
+  elk-net:
+    driver: bridge
 
 volumes:
   grafana-storage:
+  esdata:
+  mongo_data:
