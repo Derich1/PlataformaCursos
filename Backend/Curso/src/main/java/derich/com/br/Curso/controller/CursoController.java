@@ -2,8 +2,14 @@ package derich.com.br.Curso.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.StripeError;
+import com.stripe.param.PaymentIntentCreateParams;
 import derich.com.br.Curso.DTO.CursoDTO;
 import derich.com.br.Curso.DTO.CursoEditDTO;
+import com.stripe.model.PaymentIntent;
+import derich.com.br.Curso.DTO.PaymentRequest;
 import derich.com.br.Curso.entity.Curso;
 import derich.com.br.Curso.service.CursoService;
 import io.micrometer.tracing.Span;
@@ -15,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -50,6 +57,45 @@ public class CursoController {
     @GetMapping
     private List<Curso> listarCursos () {
         return cursoService.listarCursos();
+    }
+
+    @PostMapping("/criarPagamento")
+    public ResponseEntity<?> criarPagamento(@RequestBody PaymentRequest paymentRequest) {
+        try {
+            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                    .setAmount(paymentRequest.amount())
+                    .setCurrency(paymentRequest.currency())
+                    .setAutomaticPaymentMethods(
+                            PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
+                                    .setEnabled(true)
+                                    .build()
+                    )
+                    .build();
+
+            PaymentIntent intent = PaymentIntent.create(params);
+            logger.info(intent.getClientSecret());
+            return ResponseEntity.ok().body(
+                    java.util.Map.of("clientSecret", intent.getClientSecret())
+            );
+        } catch (StripeException e) {
+            logger.error("Erro ao criar o pagamento: {}", e.getMessage(), e);
+
+            StripeError stripeError = e.getStripeError();
+
+            if (stripeError != null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                        Map.of(
+                                "message: ", stripeError.getMessage(),
+                                "code: ", stripeError.getCode(),
+                                "type: ", stripeError.getType()
+                        )
+                );
+            }
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
     }
 
     @GetMapping("/{id}")
