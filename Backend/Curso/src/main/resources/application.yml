@@ -26,6 +26,10 @@ aws:
   bucketName: plataforma-cursos-bucket-sp
   profileName: default
 
+stripe:
+  secret:
+    key: ${STRIPE_KEY}
+
 management:
   tracing:
     sampling:
