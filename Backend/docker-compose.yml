@@ -26,7 +26,9 @@ services:
     networks:
       - elk-net
   curso:
-    image: curso
+    build:
+      context: ./Curso
+      dockerfile: Dockerfile
     depends_on:
       logstash:
         condition: service_healthy
