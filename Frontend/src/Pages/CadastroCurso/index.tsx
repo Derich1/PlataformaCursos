@@ -132,7 +132,7 @@ export const CadastroCurso: React.FC = () => {
 
       console.log(payload.duracaoTotalSegundos)
 
-      const response = await axios.post("http://curso:8082/curso", payload, {
+      const response = await axios.post("http://localhost:8082/curso", payload, {
         headers: { "Content-Type": "application/json" },
       });
 
