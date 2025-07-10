@@ -61,6 +61,8 @@ public class CursoController {
 
     @PostMapping("/criarPagamento")
     public ResponseEntity<?> criarPagamento(@RequestBody PaymentRequest paymentRequest) {
+        logger.info(String.valueOf(paymentRequest.amount()));
+        logger.info(paymentRequest.currency());
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                     .setAmount(paymentRequest.amount())

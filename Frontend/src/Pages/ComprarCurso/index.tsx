@@ -8,14 +8,14 @@ import type { RootState } from "../../redux/store";
 export const ComprarCurso: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const [clientSecret, setClientSecret] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const curso = useSelector((state: RootState) => state.curso.curso)
 
   useEffect(() => {
     const createPaymentIntent = async () => {
         if (!curso) return
         try {
-            const response = await axios.post('http://localhost:8082/criarPagamento', {
+            const response = await axios.post('http://localhost:8082/curso/criarPagamento', {
                 amount: curso.preco, 
                 currency: 'brl'
             });
@@ -52,7 +52,9 @@ export const ComprarCurso: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="checkout-form w-full max-w-md mx-auto p-6 bg-white shadow-lg rounded-xl space-y-6">
+    <>
+    {clientSecret && (
+      <form onSubmit={handleSubmit} className="checkout-form w-full max-w-md mx-auto p-6 bg-white shadow-lg rounded-xl space-y-6">
       <div>
         <label className="block text-gray-700 font-semibold mb-2">
           Cartão:
@@ -72,5 +74,7 @@ export const ComprarCurso: React.FC = () => {
         Pagar
       </button>
     </form>
+  )}
+    </>
   );
 }
