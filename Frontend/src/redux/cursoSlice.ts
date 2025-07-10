@@ -12,7 +12,7 @@ const initialState: CursoState = {
 };
 
 const cursoSlice = createSlice({
-  name: "cart",
+  name: "curso",
   initialState,
   reducers: {
     setCursos: (state, action: PayloadAction<CursoDTO[]>) => {

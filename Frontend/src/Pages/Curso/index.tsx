@@ -33,6 +33,7 @@ export const Curso: React.FC = () => {
         const response = await axios.get<CursoDTO>(`http://localhost:8082/curso/${id}`);
         setCursoEscolhido(response.data);
         dispatch(setCurso(response.data))
+        console.log(response.data)
       } catch (err) {
         console.error(err);
         setError("Não foi possível carregar os detalhes do curso.");
