@@ -52,12 +52,25 @@ export const ComprarCurso: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="checkout-form">
-      <label>
-        Cartão:
-        <CardElement className="card-element" />
-      </label>
-      <button type="submit" disabled={!stripe}>Pagar</button>
+    <form onSubmit={handleSubmit} className="checkout-form w-full max-w-md mx-auto p-6 bg-white shadow-lg rounded-xl space-y-6">
+      <div>
+        <label className="block text-gray-700 font-semibold mb-2">
+          Cartão:
+        </label>
+        <div className="border border-gray-300 rounded-md p-3 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500">
+          <CardElement className="card-element" />
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={!stripe}
+        className={`w-full py-2 px-4 rounded-md font-semibold text-white transition-colors duration-300 ${
+          stripe ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-not-allowed"
+        }`}
+      >
+        Pagar
+      </button>
     </form>
   );
 }
