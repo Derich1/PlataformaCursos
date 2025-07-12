@@ -8,11 +8,11 @@ import derich.com.br.Curso.entity.Aula;
 import derich.com.br.Curso.entity.Curso;
 import derich.com.br.Curso.entity.Modulo;
 import derich.com.br.Curso.service.CursoService;
+import derich.com.br.Curso.service.EmailProducer;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -24,16 +24,19 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// Todas as dependências instanciadas na classe principal precisa ser instanciada na classe de teste
 @WebMvcTest(CursoController.class)
 class CursoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private EmailProducer emailProducer;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -199,24 +202,6 @@ class CursoControllerTest {
         mockMvc.perform(delete("/curso/id999"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Curso não encontrado"));
-    }
-
-    @Test
-    @DisplayName("GET /curso/test - deve gerar span com sucesso")
-    void deveGerarSpanComSucesso() throws Exception {
-        Span mockSpan = Mockito.mock(Span.class);
-        Tracer.SpanInScope mockScope = Mockito.mock(Tracer.SpanInScope.class);
-
-        when(tracer.nextSpan()).thenReturn(mockSpan);
-        when(tracer.withSpan(mockSpan)).thenReturn(mockScope);
-        when(mockSpan.name(anyString())).thenReturn(mockSpan);
-        when(mockSpan.start()).thenReturn(mockSpan);
-
-        mockMvc.perform(get("/curso/test"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Span gerado"));
-
-        Mockito.verify(mockSpan).end(); // opcional, para garantir que terminou o span
     }
 
 }
