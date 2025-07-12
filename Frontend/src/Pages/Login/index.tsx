@@ -5,7 +5,7 @@ import { Input } from "../../components/ui/input";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
 
@@ -54,7 +54,7 @@ export default function Login() {
             </Button>
           </form>
           <p className="text-center text-sm text-muted-foreground mt-4">
-            Não tem uma conta? <a href="/cadastrar" className="underline">Cadastre-se</a>
+            Não tem uma conta? <Link to="/cadastrar" className="underline">Cadastre-se</Link>
           </p>
         </CardContent>
       </Card>

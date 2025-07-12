@@ -119,6 +119,7 @@
 
 	<build>
 		<plugins>
+			<!-- Plugin necessário para não dar o erro no manifest in app.jar no momento de buildar	-->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

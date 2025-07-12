@@ -33,7 +33,7 @@ services:
       logstash:
         condition: service_healthy
     environment:
-      - spring.data.mongodb.uri=${MONGODB_URL}
+      - spring.data.mongodb.uri=${MONGODB_CURSO}
       - LOGSTASH_HOST=logstash
       - LOGSTASH_PORT=5000
       - SPRING_PROFILES_ACTIVE=dev
@@ -44,6 +44,21 @@ services:
       - spring.rabbitmq.password=guest
     ports:
       - "8082:8082"
+    env_file:
+      - .env
+    networks:
+      - elk-net
+
+  usuario:
+    build:
+      context: ./Usuario
+      dockerfile: Dockerfile
+    environment:
+      - spring.data.mongodb.uri=${MONGODB_USUARIO}
+      - SPRING_PROFILES_ACTIVE=dev
+      - MANAGEMENT_TRACING_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces
+    ports:
+      - "8081:8081"
     env_file:
       - .env
     networks:
