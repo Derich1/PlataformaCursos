@@ -8,7 +8,7 @@ spring:
     name: curso  # Nome do microsserviço
     mongodb:
       database: curso  # Banco de dados MongoDB do microsserviço
-      uri: ${mongoDBUrl}
+      uri: ${MONGODB_CURSO}
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
