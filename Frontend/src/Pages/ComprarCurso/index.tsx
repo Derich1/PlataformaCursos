@@ -10,14 +10,19 @@ export const ComprarCurso: React.FC = () => {
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const curso = useSelector((state: RootState) => state.curso.curso)
+  const usuario = useSelector((state: RootState) => state.user.user)
 
   useEffect(() => {
     const createPaymentIntent = async () => {
         if (!curso) return
+
+        if (!usuario) return
+
         try {
             const response = await axios.post('http://localhost:8082/curso/criarPagamento', {
                 amount: curso.preco, 
-                currency: 'brl'
+                currency: 'brl',
+                email: usuario.email
             });
             setClientSecret(response.data.clientSecret);
         } catch (error) {

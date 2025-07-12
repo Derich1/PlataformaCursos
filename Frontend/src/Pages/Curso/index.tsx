@@ -1,11 +1,12 @@
 // src/pages/CursoDetalhes.tsx
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button } from "../../components/ui/button";
 import type { CursoDTO } from "../../types/curso";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurso } from "../../redux/cursoSlice";
+import type { RootState } from "../../redux/store";
 
 export const Curso: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +17,7 @@ export const Curso: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [moduloAberto, setModuloAberto] = useState(null);
+  const usuario = useSelector((state: RootState) => state.user.user)
 
   const toggleModulo = (index: any) => {
     setModuloAberto(moduloAberto === index ? null : index);
@@ -26,22 +28,21 @@ export const Curso: React.FC = () => {
       setError("ID de curso inválido.");
       setLoading(false);
       return;
+  }
+
+  const fetchCurso = async () => {
+    try {
+      const response = await axios.get<CursoDTO>(`http://localhost:8082/curso/${id}`);
+      setCursoEscolhido(response.data);
+      dispatch(setCurso(response.data))
+      console.log(response.data)
+    } catch (err) {
+      console.error(err);
+      setError("Não foi possível carregar os detalhes do curso.");
+    } finally {
+      setLoading(false);
     }
-
-    const fetchCurso = async () => {
-      try {
-        const response = await axios.get<CursoDTO>(`http://localhost:8082/curso/${id}`);
-        setCursoEscolhido(response.data);
-        dispatch(setCurso(response.data))
-        console.log(response.data)
-      } catch (err) {
-        console.error(err);
-        setError("Não foi possível carregar os detalhes do curso.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  };
     fetchCurso();
   }, [id]);
 
@@ -73,6 +74,15 @@ export const Curso: React.FC = () => {
         </Button>
       </div>
     );
+  }
+
+  function handleComprarCurso(event: any): void {
+    event.preventDefault()
+    if (!usuario){
+      alert("Faça o login para conseguir efetuar a compra")
+    }
+
+    navigate("/login")
   }
 
   return (
@@ -136,9 +146,7 @@ export const Curso: React.FC = () => {
               </div>
             </div>
           )}
-          <Link to="/comprar">
-            <button className="cursor-pointer">Comprar curso</button>
-          </Link>
+          <button className="cursor-pointer" onClick={handleComprarCurso}>Comprar curso</button>
         </div>
       </div>
     </div>

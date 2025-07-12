@@ -1,4 +1,9 @@
 spring:
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: curso  # Nome do microsserviço
     mongodb:
@@ -11,6 +16,18 @@ spring:
     multipart:
       max-file-size: 200MB
       max-request-size: 200MB
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: derich.rosario22@gmail.com
+    password: ${password}
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   port: 8082  # Porta do microsserviço
 

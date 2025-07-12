@@ -38,6 +38,10 @@ services:
       - LOGSTASH_PORT=5000
       - SPRING_PROFILES_ACTIVE=dev
       - MANAGEMENT_TRACING_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces
+      - spring.rabbitmq.host=rabbitmq
+      - spring.rabbitmq.port=5672
+      - spring.rabbitmq.username=guest
+      - spring.rabbitmq.password=guest
     ports:
       - "8082:8082"
     env_file:
@@ -110,6 +114,20 @@ services:
     networks:
       - elk-net
 
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"    # Porta AMQP
+      - "15672:15672"  # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - elk-net
+
   mongo-database:
     image: mongo:latest
     container_name: "database"
@@ -128,3 +146,4 @@ volumes:
   grafana-storage:
   esdata:
   mongo_data:
+  rabbitmq_data:

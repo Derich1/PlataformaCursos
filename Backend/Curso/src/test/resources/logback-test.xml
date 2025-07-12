@@ -1,0 +1,19 @@
+<!-- configuração para não tentar conectar com o logstash durante o build porque o projeto inteiro está no docker-->
+<configuration>
+    <!-- Configuração básica para testes: log apenas para o console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Definir o logger raiz para usar apenas o console -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <!-- Desativar explicitamente o appender do Logstash -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!-- Não configurar destino para evitar tentativas de conexão -->
+    </appender>
+</configuration>

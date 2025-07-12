@@ -2,18 +2,17 @@ package derich.com.br.Curso.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.StripeError;
 import com.stripe.param.PaymentIntentCreateParams;
 import derich.com.br.Curso.DTO.CursoDTO;
 import derich.com.br.Curso.DTO.CursoEditDTO;
 import com.stripe.model.PaymentIntent;
+import derich.com.br.Curso.DTO.EmailDTO;
 import derich.com.br.Curso.DTO.PaymentRequest;
+import derich.com.br.Curso.service.EmailProducer;
 import derich.com.br.Curso.entity.Curso;
 import derich.com.br.Curso.service.CursoService;
-import io.micrometer.tracing.Span;
-import io.micrometer.tracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,28 +29,13 @@ public class CursoController {
 
     private CursoService cursoService;
 
-    private final Tracer tracer;
+    private final EmailProducer emailProducer;
 
     private static final Logger logger = LoggerFactory.getLogger(CursoController.class);
 
-    public CursoController(Tracer tracer, CursoService cursoService) {
-        this.tracer = tracer;
+    public CursoController(EmailProducer emailProducer, CursoService cursoService) {
+        this.emailProducer = emailProducer;
         this.cursoService = cursoService;
-    }
-
-    @GetMapping("/test")
-    public String test() {
-        System.out.println("Tracer impl = " + tracer.getClass().getName());
-        Span span = tracer.nextSpan().name("manual-span").start();
-        try (Tracer.SpanInScope ws = tracer.withSpan(span)) {
-            span.tag("meu-teste", "micrometer-jaeger");
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            span.error(e);
-        } finally {
-            span.end();
-        }
-        return "Span gerado";
     }
 
     @GetMapping
@@ -61,8 +45,6 @@ public class CursoController {
 
     @PostMapping("/criarPagamento")
     public ResponseEntity<?> criarPagamento(@RequestBody PaymentRequest paymentRequest) {
-        logger.info(String.valueOf(paymentRequest.amount()));
-        logger.info(paymentRequest.currency());
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                     .setAmount(paymentRequest.amount())
@@ -76,6 +58,7 @@ public class CursoController {
 
             PaymentIntent intent = PaymentIntent.create(params);
             logger.info(intent.getClientSecret());
+            emailProducer.sendEmailToQueue(new EmailDTO(paymentRequest.email(), "Iniciando pagamento", "Parabéns pela compra do seu curso! Estamos verificando o pagamento"));
             return ResponseEntity.ok().body(
                     java.util.Map.of("clientSecret", intent.getClientSecret())
             );
