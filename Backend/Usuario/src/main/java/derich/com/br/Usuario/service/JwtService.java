@@ -1,6 +1,7 @@
 package derich.com.br.Usuario.service;
 
 import derich.com.br.Usuario.entity.Usuario;
+import derich.com.br.Usuario.repository.IUsuarioRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -20,12 +21,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-    @Value("${secret.key}")
     private final String secretKey;
     private Key key;
     private static final long EXPIRATION_TIME = 86400000;
 
-    public JwtService(String secretKey) {
+    public JwtService(@Value("${secret.key}") String secretKey) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.secretKey = secretKey;
     }
