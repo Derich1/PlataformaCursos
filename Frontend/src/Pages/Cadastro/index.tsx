@@ -10,7 +10,7 @@ import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
 interface FormData {
   nome: string;
-  numeroDocumento: string;
+  documento: string;
   dataNascimento: string;
   telefone: string;
   email: string;
@@ -53,7 +53,7 @@ export default function Cadastro() {
   const schema = z
     .object({
       nome: z.string().nonempty("O nome é obrigatório"),
-      numeroDocumento: z
+      documento: z
         .string()
         .nonempty("O CPF/CNPJ é obrigatório")
         .transform((value) => value.replace(/\D/g, "")) // Remove pontos e traço antes da validação
@@ -172,11 +172,11 @@ export default function Cadastro() {
                       type="text"
                       placeholder="CPF/CNPJ"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      {...register("numeroDocumento")}
-                      id="numeroDocumento"
+                      {...register("documento")}
+                      id="documento"
                       onInput={handleNumeroDocumentoInput}
                   />
-                  {errors.numeroDocumento && <p className="text-red-500 text-sm mt-1">{String(errors.numeroDocumento.message)}</p>}
+                  {errors.documento && <p className="text-red-500 text-sm mt-1">{String(errors.documento.message)}</p>}
               </div>
 
               <div className="mb-4">
