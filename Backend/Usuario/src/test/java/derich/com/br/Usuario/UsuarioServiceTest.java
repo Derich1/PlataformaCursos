@@ -8,6 +8,7 @@ import derich.com.br.Usuario.entity.Usuario;
 import derich.com.br.Usuario.repository.IUsuarioRepository;
 import derich.com.br.Usuario.service.JwtService;
 import derich.com.br.Usuario.service.UsuarioService;
+import derich.com.br.Usuario.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,6 +37,9 @@ public class UsuarioServiceTest {
 
 	@Mock
 	private JwtService jwtService;
+
+	@Mock
+	private Util util;
 
 	@BeforeEach
 	void setUp() {

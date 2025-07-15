@@ -1,13 +1,11 @@
 package derich.com.br.Usuario.DTO;
 
-import java.time.LocalDate;
-
 public record LoginResponseDTO(
         String id,
         String token,
         String nome,
         String documento,
-        LocalDate dataNascimento,
+        String dataNascimento,
         String email,
         String tipo
 ) { }
