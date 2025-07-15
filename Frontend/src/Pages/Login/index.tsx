@@ -26,7 +26,17 @@ export default function Login() {
             const response = await axios.post("http://localhost:8081/usuario/login", loginDTO)
 
             if (response.status === 200){
-                dispatch(loginSuccess(response.data))
+                dispatch(loginSuccess({
+                  token: response.data.token,
+                  usuario: {
+                    id: response.data.id,
+                    nome: response.data.nome,
+                    documento: response.data.documento,
+                    dataNascimento: response.data.dataNascimento,
+                    email: response.data.email,
+                    tipo: response.data.tipo
+                  }
+                }));
                 console.log(response.data)
                 toast.success("Login efetuado com sucesso!")
                 navigate("/")

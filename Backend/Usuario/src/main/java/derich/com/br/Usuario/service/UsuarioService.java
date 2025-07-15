@@ -34,10 +34,12 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
         return new LoginResponseDTO(
                 token,
+                usuario.getId(),
                 usuario.getNome(),
                 usuario.getDocumento(),
                 usuario.getDataNascimento(),
-                usuario.getEmail()
+                usuario.getEmail(),
+                usuario.getTipo()
         );
     }
 
@@ -55,10 +57,12 @@ public class UsuarioService {
         if (usuario.getSenha().equals(loginRequestDTO.senha())){
             return new LoginResponseDTO(
                     token,
+                    usuario.getId(),
                     usuario.getNome(),
                     usuario.getDocumento(),
                     usuario.getDataNascimento(),
-                    usuario.getEmail()
+                    usuario.getEmail(),
+                    usuario.getTipo()
             );
         }
         throw new RuntimeException("Erro ao fazer login");
