@@ -18,6 +18,26 @@ eureka:
     service-url:
       defaultZone: http://service-discovery:8761/eureka/
 
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://jaeger:4318/v1/traces
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
 logging:
   level:
-    root: INFO
+    io.micrometer.tracing: DEBUG
+    io.opentelemetry: DEBUG
