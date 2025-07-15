@@ -6,12 +6,15 @@ import derich.com.br.Usuario.DTO.LoginResponseDTO;
 import derich.com.br.Usuario.DTO.UsuarioDTO;
 import derich.com.br.Usuario.entity.Usuario;
 import derich.com.br.Usuario.repository.IUsuarioRepository;
+import derich.com.br.Usuario.service.JwtService;
 import derich.com.br.Usuario.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -30,6 +33,9 @@ public class UsuarioServiceTest {
 	//	e injeta automaticamente os mocks (feitos com @Mock) nas dependências da classe.
 	@InjectMocks
 	private UsuarioService usuarioService;
+
+	@Mock
+	private JwtService jwtService;
 
 	@BeforeEach
 	void setUp() {
