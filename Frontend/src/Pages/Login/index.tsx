@@ -6,12 +6,15 @@ import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/userSlice";
 
 export default function Login() {
 
     const [email, setEmail] = useState("")
     const [senha, setSenha] = useState("")  
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleSubmit = async(e: any) => {
         e.preventDefault()
@@ -23,6 +26,8 @@ export default function Login() {
             const response = await axios.post("http://localhost:8081/usuario/login", loginDTO)
 
             if (response.status === 200){
+                dispatch(loginSuccess(response.data))
+                console.log(response.data)
                 toast.success("Login efetuado com sucesso!")
                 navigate("/")
                 return

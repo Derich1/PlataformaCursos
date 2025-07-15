@@ -39,6 +39,8 @@ public class Usuario {
     // caso seja instrutor
     private List<String> cursosCriados;
 
+    private List<String> roles;
+
     public Usuario (UsuarioDTO usuarioDTO) {
         this.nome = usuarioDTO.nome();
         this.documento = usuarioDTO.documento();

@@ -2,6 +2,7 @@ package derich.com.br.Usuario;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import derich.com.br.Usuario.DTO.LoginRequestDTO;
+import derich.com.br.Usuario.DTO.LoginResponseDTO;
 import derich.com.br.Usuario.DTO.UsuarioDTO;
 import derich.com.br.Usuario.entity.Usuario;
 import derich.com.br.Usuario.repository.IUsuarioRepository;
@@ -44,9 +45,9 @@ public class UsuarioServiceTest {
 
 		when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
 
-		Usuario resultado = usuarioService.cadastrarUsuario(dto);
+		LoginResponseDTO resultado = usuarioService.cadastrarUsuario(dto);
 
-		assertEquals("João", resultado.getNome());
+		assertEquals("João", resultado.nome());
 		verify(usuarioRepository, times(1)).save(any(Usuario.class));
 	}
 
