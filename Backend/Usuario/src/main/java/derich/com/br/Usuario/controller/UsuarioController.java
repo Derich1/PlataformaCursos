@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import derich.com.br.Usuario.DTO.LoginRequestDTO;
 import derich.com.br.Usuario.DTO.LoginResponseDTO;
 import derich.com.br.Usuario.DTO.UsuarioDTO;
+import derich.com.br.Usuario.DTO.UsuarioResponseDTO;
 import derich.com.br.Usuario.entity.Usuario;
 import derich.com.br.Usuario.service.UsuarioService;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -28,9 +30,9 @@ public class UsuarioController {
     private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     @PostMapping("/cadastrar")
-    private Usuario cadastrarUsuario (@RequestBody UsuarioDTO usuarioDTO) {
-        Usuario usuario = usuarioService.cadastrarUsuario(usuarioDTO);
-        return usuario;
+    private LoginResponseDTO cadastrarUsuario (@RequestBody UsuarioDTO usuarioDTO) {
+        LoginResponseDTO loginResponseDTO = usuarioService.cadastrarUsuario(usuarioDTO);
+        return loginResponseDTO;
     }
 
     @PostMapping("/login")
@@ -45,5 +47,10 @@ public class UsuarioController {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/perfil/{id}")
+    private UsuarioResponseDTO buscarPerfil(@PathVariable String id){
+        return usuarioService.buscarPerfil(id);
     }
 }
