@@ -4,7 +4,6 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 
-
 export const ComprarCurso: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
