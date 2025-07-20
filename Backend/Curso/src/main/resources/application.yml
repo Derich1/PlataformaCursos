@@ -1,14 +1,8 @@
 spring:
-  rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: guest
-    password: guest
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev} # dev como padrão
   application:
     name: curso  # Nome do microsserviço
-    mongodb:
-      database: curso  # Banco de dados MongoDB do microsserviço
-      uri: ${MONGODB_CURSO}
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
