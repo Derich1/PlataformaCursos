@@ -31,6 +31,10 @@ public class UsuarioService {
     private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     public LoginResponseDTO cadastrarUsuario (UsuarioDTO usuarioDTO) {
+        if (usuarioRepository.existsByEmail(usuarioDTO.email())) {
+            throw new RuntimeException("Email já cadastrado.");
+        }
+
         String dataFormatada = util.formatarData(usuarioDTO.dataNascimento());
         Usuario usuario = new Usuario(usuarioDTO);
         String token = jwtService.generateToken(usuario);
