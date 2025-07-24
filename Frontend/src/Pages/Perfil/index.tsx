@@ -79,7 +79,11 @@ export const Perfil: React.FC = () => {
           </ul>
         </div>
       )}
-      <button onClick={handleSairConta}>Sair</button>
+      <div className="flex mx-auto text-center justify-center items-center cursor-pointer bg-red-400 rounded-xl mt-4 w-20">
+        <button onClick={handleSairConta} className="">
+          Sair
+        </button>
+      </div>
     </div>
   );
 };
