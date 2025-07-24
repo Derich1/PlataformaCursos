@@ -99,6 +99,8 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     networks:
       - elk-net
+    environment:
+      - "QUEUE_TYPE=memory"
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.8.2
