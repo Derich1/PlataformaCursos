@@ -8,36 +8,35 @@ import { CadastroCurso } from "../Pages/CadastroCurso";
 import { Curso } from "../Pages/Curso";
 import PagamentoStripe from "../Pages/PagamentoStripe";
 import { Perfil } from "../Pages/Perfil";
-
+import { ComprarCurso } from "../Pages/ComprarCurso";
 
 export default function AppRoutes() {
-    
+  return (
+    <div className="flex flex-col min-h-screen">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ zIndex: 100000 }}
+      />
+      <Header />
 
-    return(
-        <div className="flex flex-col min-h-screen">
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            style={{ zIndex: 100000 }}
-          />
-          <Header/>
-      
       <Routes>
-          <Route index element={<Home />} />
-          <Route path="cadastrar" element={<Cadastro />} />
-          <Route path="login" element={<Login />} />
-          <Route path="cadastrarCurso" element={<CadastroCurso />} />
-          <Route path="/curso/:id" element={<Curso />} />
-          <Route path="comprar" element={<PagamentoStripe />} />
-          <Route path="perfil" element={<Perfil />} />
+        <Route index element={<Home />} />
+        <Route path="cadastrar" element={<Cadastro />} />
+        <Route path="login" element={<Login />} />
+        <Route path="cadastrarCurso" element={<CadastroCurso />} />
+        <Route path="/curso/:id" element={<Curso />} />
+        <Route path="comprar" element={<PagamentoStripe />} />
+        <Route path="comprarCurso" element={<ComprarCurso />} />
+        <Route path="perfil" element={<Perfil />} />
       </Routes>
     </div>
-    )
+  );
 }
