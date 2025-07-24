@@ -11,13 +11,13 @@ import type { RootState } from "../../redux/store";
 export const Curso: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const [cursoEscolhido, setCursoEscolhido] = useState<CursoDTO | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [moduloAberto, setModuloAberto] = useState(null);
-  const usuario = useSelector((state: RootState) => state.user.user)
+  const usuario = useSelector((state: RootState) => state.user.user);
 
   const toggleModulo = (index: any) => {
     setModuloAberto(moduloAberto === index ? null : index);
@@ -28,21 +28,23 @@ export const Curso: React.FC = () => {
       setError("ID de curso inválido.");
       setLoading(false);
       return;
-  }
-
-  const fetchCurso = async () => {
-    try {
-      const response = await axios.get<CursoDTO>(`http://localhost:8082/curso/${id}`);
-      setCursoEscolhido(response.data);
-      dispatch(setCurso(response.data))
-      console.log(response.data)
-    } catch (err) {
-      console.error(err);
-      setError("Não foi possível carregar os detalhes do curso.");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    const fetchCurso = async () => {
+      try {
+        const response = await axios.get<CursoDTO>(
+          `http://localhost:8082/curso/${id}`
+        );
+        setCursoEscolhido(response.data);
+        dispatch(setCurso(response.data));
+        console.log(response.data);
+      } catch (err) {
+        console.error(err);
+        setError("Não foi possível carregar os detalhes do curso.");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchCurso();
   }, [id]);
 
@@ -77,12 +79,12 @@ export const Curso: React.FC = () => {
   }
 
   function handleComprarCurso(event: any): void {
-    event.preventDefault()
-    if (!usuario){
-      alert("Faça o login para conseguir efetuar a compra")
+    event.preventDefault();
+    if (!usuario) {
+      alert("Faça o login para conseguir efetuar a compra");
+      navigate("/login");
     }
-
-    navigate("/login")
+    navigate("/comprar");
   }
 
   return (
@@ -102,15 +104,21 @@ export const Curso: React.FC = () => {
             <p className="text-gray-700">{cursoEscolhido.descricao}</p>
           </div>
           <div>
-            <span className="font-semibold">Criado por</span> {cursoEscolhido.professor}
+            <span className="font-semibold">Criado por</span>{" "}
+            {cursoEscolhido.professor}
           </div>
           <div>{cursoEscolhido.categoria}</div>
 
           {cursoEscolhido.modulos.length > 0 && (
             <div>
               <div className="flex space-x-2">
-                <span className="font-semibold block mb-2">Conteúdo do curso</span>
-                <span>{Math.floor(cursoEscolhido.duracaoTotalSegundos / 60)} minutos e {cursoEscolhido.duracaoTotalSegundos % 60} segundos</span>
+                <span className="font-semibold block mb-2">
+                  Conteúdo do curso
+                </span>
+                <span>
+                  {Math.floor(cursoEscolhido.duracaoTotalSegundos / 60)} minutos
+                  e {cursoEscolhido.duracaoTotalSegundos % 60} segundos
+                </span>
               </div>
               <div className="space-y-2">
                 {cursoEscolhido.modulos.map((modulo, index) => {
@@ -129,13 +137,17 @@ export const Curso: React.FC = () => {
 
                       <div
                         className={`transition-all duration-500 ease-in-out ${
-                          isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                          isOpen
+                            ? "max-h-[500px] opacity-100"
+                            : "max-h-0 opacity-0"
                         } overflow-hidden`}
                       >
                         <ul className="p-4 pl-6 list-disc text-gray-700">
                           {modulo.aulas.map((aula, i) => (
                             <li key={i}>
-                              {aula.titulo} – {Math.floor(aula.duracaoEmSegundos / 60)} minutos e {aula.duracaoEmSegundos % 60} segundos
+                              {aula.titulo} –{" "}
+                              {Math.floor(aula.duracaoEmSegundos / 60)} minutos
+                              e {aula.duracaoEmSegundos % 60} segundos
                             </li>
                           ))}
                         </ul>
@@ -146,9 +158,11 @@ export const Curso: React.FC = () => {
               </div>
             </div>
           )}
-          <button className="cursor-pointer" onClick={handleComprarCurso}>Comprar curso</button>
+          <button className="cursor-pointer" onClick={handleComprarCurso}>
+            Comprar curso
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
