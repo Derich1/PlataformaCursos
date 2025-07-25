@@ -10,12 +10,11 @@ export default function Header() {
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <a
-          href="/"
-          className="text-2xl font-bold text-blue-700 hover:text-blue-900 transition-colors"
-        >
-          Desenvolva suas habilidades
-        </a>
+        <Link to="/">
+          <Button className="text-2xl text-center cursor-pointer">
+            Desenvolva suas habilidades
+          </Button>
+        </Link>
 
         <nav className="flex items-center space-x-4">
           <a
@@ -48,7 +47,7 @@ export default function Header() {
             <Link to="/login">
               <Button
                 variant="default"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded transition-colors"
+                className="cursor-pointer text-white font-medium px-4 py-2 rounded transition-colors"
               >
                 Login
               </Button>

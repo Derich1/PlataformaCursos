@@ -110,7 +110,7 @@ export const ComprarCurso: React.FC = () => {
           <button
             type="submit"
             disabled={!stripe}
-            className={`w-full py-2 px-4 rounded-md font-semibold text-white transition-colors duration-300 ${
+            className={`w-full py-2 px-4 cursor-pointer rounded-md font-semibold text-white transition-colors duration-300 ${
               stripe
                 ? "bg-blue-600 hover:bg-blue-700"
                 : "bg-gray-400 cursor-not-allowed"
