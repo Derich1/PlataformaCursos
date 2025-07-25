@@ -1,7 +1,7 @@
 package derich.com.br.Curso.controller;
 
 import derich.com.br.Curso.DTO.EmailDTO;
-import derich.com.br.Curso.service.EmailProducer;
+import derich.com.br.Curso.service.CursoServiceProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/notificacao")
 public class NotificacaoController {
 
-    private final EmailProducer producer;
+    private final CursoServiceProducer producer;
 
-    public NotificacaoController(EmailProducer producer) {
+    public NotificacaoController(CursoServiceProducer producer) {
         this.producer = producer;
     }
 

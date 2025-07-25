@@ -2,11 +2,7 @@ package derich.com.br.Usuario.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import derich.com.br.Usuario.DTO.LoginRequestDTO;
-import derich.com.br.Usuario.DTO.LoginResponseDTO;
-import derich.com.br.Usuario.DTO.UsuarioDTO;
-import derich.com.br.Usuario.DTO.UsuarioResponseDTO;
-import derich.com.br.Usuario.entity.Usuario;
+import derich.com.br.Usuario.DTO.*;
 import derich.com.br.Usuario.service.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -33,6 +25,17 @@ public class UsuarioController {
     private LoginResponseDTO cadastrarUsuario (@RequestBody UsuarioDTO usuarioDTO) {
         LoginResponseDTO loginResponseDTO = usuarioService.cadastrarUsuario(usuarioDTO);
         return loginResponseDTO;
+    }
+
+    @PostMapping("/adicionarCurso")
+    public ResponseEntity<?> adicionarCurso(@RequestBody AdicionarCursoRequestDTO dto) {
+        try {
+            usuarioService.adicionarCurso(dto);
+            return ResponseEntity.ok("Curso adicionado a lista de cursos matriculados com sucesso");
+        } catch (RuntimeException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Não foi possível adicionar o curso. " + e.getMessage());
+        }
     }
 
     @PostMapping("/login")

@@ -77,8 +77,6 @@ services:
         hard: -1
     ports:
       - 9200:9200
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
     networks:
       - elk-net
 
@@ -165,6 +163,5 @@ networks:
 
 volumes:
   grafana-storage:
-  esdata:
   mongo_data:
   rabbitmq_data:

@@ -3,10 +3,7 @@ package derich.com.br.Usuario.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import derich.com.br.Usuario.DTO.LoginRequestDTO;
-import derich.com.br.Usuario.DTO.LoginResponseDTO;
-import derich.com.br.Usuario.DTO.UsuarioDTO;
-import derich.com.br.Usuario.DTO.UsuarioResponseDTO;
+import derich.com.br.Usuario.DTO.*;
 import derich.com.br.Usuario.entity.Usuario;
 import derich.com.br.Usuario.repository.IUsuarioRepository;
 import derich.com.br.Usuario.util.Util;
@@ -15,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -48,6 +48,20 @@ public class UsuarioService {
                 usuario.getEmail(),
                 usuario.getTipo()
         );
+    }
+
+    public void adicionarCurso(AdicionarCursoRequestDTO dto){
+        Usuario usuario = usuarioRepository.findByEmail(dto.email())
+                .orElseThrow(() -> new RuntimeException("Não foi possível encontrar nenhum usuário com este email"));
+        if (usuario.getCursosMatriculados() == null) {
+            usuario.setCursosMatriculados(new ArrayList<>());
+        }
+
+        List<String> cursos = usuario.getCursosMatriculados();
+        if (!cursos.contains(dto.nomeCurso())) {
+            cursos.add(dto.nomeCurso());
+        }
+        usuarioRepository.save(usuario);
     }
 
     public LoginResponseDTO login (LoginRequestDTO loginRequestDTO) throws JsonProcessingException {

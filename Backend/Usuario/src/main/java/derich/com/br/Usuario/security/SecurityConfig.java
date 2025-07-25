@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)    // forma atual de desabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // libera preflight
-                        .requestMatchers("/usuario/login", "/usuario/cadastrar").permitAll()
+                        .requestMatchers("/usuario/login", "/usuario/cadastrar", "/usuario/adicionarCurso").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
