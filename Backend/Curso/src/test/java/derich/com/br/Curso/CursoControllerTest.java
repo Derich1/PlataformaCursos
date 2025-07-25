@@ -8,8 +8,7 @@ import derich.com.br.Curso.entity.Aula;
 import derich.com.br.Curso.entity.Curso;
 import derich.com.br.Curso.entity.Modulo;
 import derich.com.br.Curso.service.CursoService;
-import derich.com.br.Curso.service.EmailProducer;
-import io.micrometer.tracing.Span;
+import derich.com.br.Curso.service.CursoServiceProducer;
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ class CursoControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private EmailProducer emailProducer;
+    private CursoServiceProducer cursoServiceProducer;
 
     @Autowired
     private ObjectMapper objectMapper;

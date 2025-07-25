@@ -61,6 +61,19 @@ export const ComprarCurso: React.FC = () => {
     if (error) {
       toast.error("Ocorreu um erro ao processar pagamento.");
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      const adicionarCursoRequestDTO = {
+        email: usuario?.email,
+        nomeCurso: curso?.nome,
+      };
+      const response = await axios.post(
+        "http://localhost:8081/usuario/adicionarCurso",
+        adicionarCursoRequestDTO
+      );
+      if (response.status == 200) {
+        toast.success(response.data);
+      } else {
+        toast.error(response.data);
+      }
       toast.success("Pagamento efetuado com sucesso!");
       navigate("/");
     }

@@ -5,12 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.exception.StripeException;
 import com.stripe.model.StripeError;
 import com.stripe.param.PaymentIntentCreateParams;
-import derich.com.br.Curso.DTO.CursoDTO;
-import derich.com.br.Curso.DTO.CursoEditDTO;
+import derich.com.br.Curso.DTO.*;
 import com.stripe.model.PaymentIntent;
-import derich.com.br.Curso.DTO.EmailDTO;
-import derich.com.br.Curso.DTO.PaymentRequest;
-import derich.com.br.Curso.service.EmailProducer;
+import derich.com.br.Curso.service.CursoServiceProducer;
 import derich.com.br.Curso.entity.Curso;
 import derich.com.br.Curso.service.CursoService;
 import org.slf4j.Logger;
@@ -29,12 +26,12 @@ public class CursoController {
 
     private CursoService cursoService;
 
-    private final EmailProducer emailProducer;
+    private final CursoServiceProducer cursoServiceProducer;
 
     private static final Logger logger = LoggerFactory.getLogger(CursoController.class);
 
-    public CursoController(EmailProducer emailProducer, CursoService cursoService) {
-        this.emailProducer = emailProducer;
+    public CursoController(CursoServiceProducer cursoServiceProducer, CursoService cursoService) {
+        this.cursoServiceProducer = cursoServiceProducer;
         this.cursoService = cursoService;
     }
 
@@ -58,7 +55,7 @@ public class CursoController {
 
             PaymentIntent intent = PaymentIntent.create(params);
             logger.info(intent.getClientSecret());
-            emailProducer.sendEmailToQueue(new EmailDTO(paymentRequest.email(), "Iniciando pagamento", "Parabéns pela compra do seu curso! Estamos verificando o pagamento"));
+            cursoServiceProducer.sendEmailToQueue(new EmailDTO(paymentRequest.email(), "Iniciando pagamento", "Parabéns pela compra do seu curso! Estamos verificando o pagamento"));
             return ResponseEntity.ok().body(
                     java.util.Map.of("clientSecret", intent.getClientSecret())
             );
