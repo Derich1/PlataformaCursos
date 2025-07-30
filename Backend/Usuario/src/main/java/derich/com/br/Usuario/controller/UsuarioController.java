@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/usuario")
@@ -55,5 +57,10 @@ public class UsuarioController {
     @GetMapping("/perfil/{id}")
     private UsuarioResponseDTO buscarPerfil(@PathVariable String id){
         return usuarioService.buscarPerfil(id);
+    }
+
+    @GetMapping("/cursosMatriculados/{id}")
+    private List<CursoDTO> buscarCursosMatriculados(@PathVariable String id){
+        return usuarioService.buscarCursosMatriculados(id);
     }
 }

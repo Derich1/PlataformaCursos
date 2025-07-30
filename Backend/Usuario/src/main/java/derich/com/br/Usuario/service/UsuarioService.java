@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import derich.com.br.Usuario.DTO.*;
+import derich.com.br.Usuario.client.CursoClient;
 import derich.com.br.Usuario.entity.Usuario;
 import derich.com.br.Usuario.repository.IUsuarioRepository;
 import derich.com.br.Usuario.util.Util;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -24,6 +26,9 @@ public class UsuarioService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private CursoClient cursoClient;
 
     @Autowired
     private Util util;
@@ -100,5 +105,16 @@ public class UsuarioService {
                 dataFormatada,
                 usuario.getEmail()
         );
+    }
+
+    public List<CursoDTO> buscarCursosMatriculados(String usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        List<String> idsCursos = usuario.getCursosMatriculados();
+
+        if (idsCursos.isEmpty()) return List.of();
+
+        return cursoClient.buscarCursosPorIds(idsCursos);
     }
 }
