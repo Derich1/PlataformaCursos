@@ -17,12 +17,12 @@ export default function Header() {
         </Link>
 
         <nav className="flex items-center space-x-4">
-          <a
-            href="#courses"
+          <Link
+            to="/cursosMatriculados"
             className="text-gray-700 hover:text-blue-600 transition-colors"
           >
             Cursos
-          </a>
+          </Link>
           <a
             href="#about"
             className="text-gray-700 hover:text-blue-600 transition-colors"

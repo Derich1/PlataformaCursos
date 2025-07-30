@@ -2,6 +2,7 @@ package derich.com.br.Curso.service;
 
 import derich.com.br.Curso.DTO.CursoDTO;
 import derich.com.br.Curso.DTO.CursoEditDTO;
+import derich.com.br.Curso.DTO.CursoResponseDTO;
 import derich.com.br.Curso.entity.Aula;
 import derich.com.br.Curso.entity.Curso;
 import derich.com.br.Curso.entity.Modulo;
@@ -27,6 +28,22 @@ public class CursoService {
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
     }
 
+    public List<CursoResponseDTO> buscarCursosPorIds(List<String> ids) {
+        List<Curso> cursos = cursoRepository.findByIds(ids);
+        return cursos.stream()
+                .map(this::converterParaDTO)
+                .toList();
+    }
+
+    private CursoResponseDTO converterParaDTO(Curso curso) {
+        return new CursoResponseDTO(
+                curso.getId(),
+                curso.getNome(),
+                curso.getDescricao(),
+                curso.getProfessor(),
+                curso.getModulos()
+        );
+    }
 
     public Curso cadastrarCurso (CursoDTO cursoDTO) {
         Curso curso = new Curso(cursoDTO);

@@ -86,6 +86,11 @@ public class CursoController {
         return ResponseEntity.ok(curso);
     }
 
+    @PostMapping("/buscarCursosPorIdUsuario")
+    public ResponseEntity<List<CursoResponseDTO>> buscarCursosPorIdUsuario(@RequestBody List<String> ids) {
+        List<CursoResponseDTO> curso = cursoService.buscarCursosPorIds(ids);
+        return ResponseEntity.ok(curso);
+    }
 
     @PostMapping
     private Curso cadastrarCurso (@RequestBody CursoDTO cursoDTO) throws JsonProcessingException {

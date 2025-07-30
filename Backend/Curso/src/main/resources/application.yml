@@ -65,4 +65,3 @@ logging:
     io.micrometer.tracing: DEBUG
     io.opentelemetry: DEBUG
 
-
