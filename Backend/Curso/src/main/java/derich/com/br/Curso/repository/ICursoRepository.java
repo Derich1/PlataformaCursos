@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ICursoRepository extends MongoRepository<Curso, String> {
     Optional<Curso> findByNome(String nome);
-    List<Curso> findByIds(List<String> ids);
+    List<Curso> findByIdIn(List<String> ids);
 }

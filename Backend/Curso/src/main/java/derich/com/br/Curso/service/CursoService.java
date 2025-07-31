@@ -29,7 +29,7 @@ public class CursoService {
     }
 
     public List<CursoResponseDTO> buscarCursosPorIds(List<String> ids) {
-        List<Curso> cursos = cursoRepository.findByIds(ids);
+        List<Curso> cursos = cursoRepository.findByIdIn(ids);
         return cursos.stream()
                 .map(this::converterParaDTO)
                 .toList();
