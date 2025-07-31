@@ -9,6 +9,6 @@ public record CursoDTO(
         String descricao,
         String professor,
         String categoria,
-        List<Modulo> modulos
+        List<ModuloDTO> modulos
 )
 { }
