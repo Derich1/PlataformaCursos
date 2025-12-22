@@ -20,9 +20,7 @@ export default function Home() {
   useEffect(() => {
     const handleListarCursos = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/curso`
-        );
+        const response = await axios.get(`/curso`);
         console.log(response.data);
         dispatch(setCursos(response.data));
       } catch (error) {
