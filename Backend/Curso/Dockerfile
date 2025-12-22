@@ -1,5 +1,5 @@
 # Etapa 1: build com Maven
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+FROM eclipse-temurin:21-jdk AS builder
 
 # WORKDIR: define o diretório de trabalho dentro do container.
 # /app: é o caminho absoluto dentro do container onde o código será colocado.
