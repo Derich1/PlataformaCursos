@@ -36,7 +36,7 @@ public class CursoController {
     }
 
     @GetMapping
-    private List<Curso> listarCursos () {
+    public List<Curso> listarCursos () {
         return cursoService.listarCursos();
     }
 
