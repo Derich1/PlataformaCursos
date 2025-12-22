@@ -93,8 +93,6 @@ services:
     ports:
       - 15000:5000     # porta p/ appender TCP
       - 9600:9600     # API de monitoring
-    volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
     networks:
       - elk-net
     environment:
