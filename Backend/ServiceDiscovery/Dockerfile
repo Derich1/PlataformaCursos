@@ -2,7 +2,7 @@
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: imagem final
 FROM eclipse-temurin:21-jdk
