@@ -20,7 +20,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Etapa 2: imagem final, apenas com o JAR
-FROM maven:3.9.9-eclipse-temurin-21
+FROM eclipse-temurin:21-jre
 
 # Novamente define /app como o diretório de trabalho dentro do novo container (da imagem final).
 WORKDIR /app
