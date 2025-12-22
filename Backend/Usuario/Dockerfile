@@ -17,10 +17,10 @@ COPY pom.xml .
 COPY src ./src
 
 # Faz o build do projeto
-RUN mvn clean install
+RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: imagem final, apenas com o JAR
-FROM openjdk:21-jdk
+FROM maven:3.9.6-eclipse-temurin-21
 
 # Novamente define /app como o diretório de trabalho dentro do novo container (da imagem final).
 WORKDIR /app
