@@ -17,7 +17,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Faz o build do projeto
-RUN mvn clean install
+RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: imagem final, apenas com o JAR
 FROM eclipse-temurin:21-jdk
