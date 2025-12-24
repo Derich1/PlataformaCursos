@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -12,6 +11,7 @@ import { useEffect } from "react";
 import { FaLinkedin } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import type { RootState } from "../../redux/store";
+import { api } from "../../services/api";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     const handleListarCursos = async () => {
       try {
-        const response = await axios.get(`/curso`);
+        const response = await api.get(`/curso`);
         console.log("resposta tentando chamar endpoint", response.data);
         dispatch(setCursos(response.data));
       } catch (error) {
