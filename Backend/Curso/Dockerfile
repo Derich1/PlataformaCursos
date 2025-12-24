@@ -25,6 +25,8 @@ FROM eclipse-temurin:21-jre
 # Novamente define /app como o diretório de trabalho dentro do novo container (da imagem final).
 WORKDIR /app
 
+RUN ls -l /app/target
+
 # COPY: copia o JAR do estágio anterior.
 # --from=builder: especifica que o arquivo está no estágio chamado builder (primeira imagem).
 COPY --from=builder /app/target/Curso-0.0.1-SNAPSHOT.jar /app/app.jar
