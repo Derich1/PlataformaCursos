@@ -38,6 +38,7 @@ public class CursoController {
     @GetMapping
     public ResponseEntity<List<Curso>> listarCursos() {
         List<Curso> cursos = cursoService.listarCursos();
+        logger.info("endpoint listar cursos no backend {}", cursos);
         return ResponseEntity.ok(cursos);
     }
 
