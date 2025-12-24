@@ -36,8 +36,9 @@ public class CursoController {
     }
 
     @GetMapping
-    public List<Curso> listarCursos () {
-        return cursoService.listarCursos();
+    public ResponseEntity<List<Curso>> listarCursos() {
+        List<Curso> cursos = cursoService.listarCursos();
+        return ResponseEntity.ok(cursos);
     }
 
     @PostMapping("/criarPagamento")
