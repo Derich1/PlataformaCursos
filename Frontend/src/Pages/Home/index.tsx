@@ -21,10 +21,10 @@ export default function Home() {
     const handleListarCursos = async () => {
       try {
         const response = await axios.get(`/curso`);
-        console.log(response.data);
+        console.log("resposta tentando chamar endpoint", response.data);
         dispatch(setCursos(response.data));
       } catch (error) {
-        console.log(error);
+        console.log("resposta erro ao chamar endpoint", error);
       }
     };
 
