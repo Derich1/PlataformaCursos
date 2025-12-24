@@ -27,7 +27,7 @@ WORKDIR /app
 
 # COPY: copia o JAR do estágio anterior.
 # --from=builder: especifica que o arquivo está no estágio chamado builder (primeira imagem).
-COPY --from=builder /app/target/Usuario-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY --from=builder /app/target/*.jar /app/app.jar
 
 # Comando para rodar a aplicação
 CMD ["java", "-jar", "/app/app.jar"]
