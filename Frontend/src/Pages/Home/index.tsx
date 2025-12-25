@@ -21,6 +21,7 @@ export default function Home() {
     const handleListarCursos = async () => {
       try {
         const response = await api.get(`/curso`);
+        console.log("url sendo chamada: ", api.defaults.baseURL);
         console.log("resposta tentando chamar endpoint", response.data);
         dispatch(setCursos(response.data));
       } catch (error) {
