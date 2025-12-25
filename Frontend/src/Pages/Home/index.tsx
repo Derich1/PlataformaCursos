@@ -25,6 +25,7 @@ export default function Home() {
         console.log("resposta tentando chamar endpoint", response.data);
         dispatch(setCursos(response.data));
       } catch (error) {
+        console.log("url sendo chamada: ", api.defaults.baseURL);
         console.log("resposta erro ao chamar endpoint", error);
       }
     };
